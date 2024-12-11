@@ -1,66 +1,72 @@
 import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
+import {
+  Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  IconButton,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  InputAdornment,
+  FormHelperText,
+  CircularProgress
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
-import { Divider, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { serverSourceDev } from 'constant/constantaEnv';
 
-// ==============================|| ADD NASABAH ||============================== //
-
-const AddNasabah = (props) => {
-  const { refreshTable } = props; // Refresh table after adding new nasabah
-
-  // State variables for all the fields
+const UpdateNasabah = (props) => {
+  const { refreshTable, nasabah } = props;
   const [visible, setVisible] = useState(false);
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [maritalStatus, setMaritalStatus] = useState('');
-  const [fatherName, setFatherName] = useState('');
-  const [motherName, setMotherName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [placeOfBirth, setPlaceOfBirth] = useState('');
-  const [address, setAddress] = useState('');
-  const [nik, setNik] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [monthlyIncome, setMonthlyIncome] = useState('');
-  const [employmentStatus, setEmploymentStatus] = useState('');
-  const [workAddress, setWorkAddress] = useState('');
-  const [longYearsJob, setLongYearsJob] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const createHandler = async (e) => {
+  const [name, setName] = useState(nasabah.name_nasabah);
+  const [gender, setGender] = useState(nasabah.gender);
+  const [maritalStatus, setMaritalStatus] = useState(nasabah.marital_status);
+  const [fatherName, setFatherName] = useState(nasabah.fathername);
+  const [motherName, setMotherName] = useState(nasabah.mothername);
+  const [phoneNumber, setPhoneNumber] = useState(nasabah.no_hp);
+  const [placeOfBirth, setPlaceOfBirth] = useState(nasabah.place_of_birth);
+  const [birthday, setBirthday] = useState(nasabah.birthday);
+  const [address, setAddress] = useState(nasabah.address);
+  const [nik, setNik] = useState(nasabah.nik);
+  const [jobTitle, setJobTitle] = useState(nasabah.job_title);
+  const [monthlyIncome, setMonthlyIncome] = useState(nasabah.monthly_income);
+  const [employmentStatus, setEmploymentStatus] = useState(nasabah.employment_status);
+  const [workAddress, setWorkAddress] = useState(nasabah.work_address);
+  const [longYearsJob, setLongYearsJob] = useState(nasabah.long_work_at_company);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    if (!name || !nik || !address) {
-      setLoading(false);
-      return Swal.fire({ icon: 'error', title: 'Please fill in all required fields' });
+    if (!name | !gender | !maritalStatus || !fatherName || !motherName || !phoneNumber) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Please fill dont empty cause it, required fields'
+      });
     }
     setVisible(false);
-
     try {
-      const response = await axios.post(
-        `${serverSourceDev}nasabah/register`,
+      const response = await axios.put(
+        `${serverSourceDev}nasabah/update/${nasabah.id}`,
         {
           name_nasabah: name,
           gender: gender,
+          marital_status: maritalStatus,
           fathername: fatherName,
           mothername: motherName,
-          marital_status: maritalStatus,
           no_hp: phoneNumber,
           place_of_birth: placeOfBirth,
-          birthday: birthday,
           address: address,
           nik: nik,
           job_title: jobTitle,
@@ -76,20 +82,19 @@ const AddNasabah = (props) => {
         }
       );
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: 'Data Berhasil Ditambahkan'
+          title: 'Data Updated Successfully'
         }).then(() => {
           setVisible(false);
           refreshTable();
-          resetForm();
         });
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Error creating data',
+        title: 'Error Updating Data',
         text: error.message
       });
     } finally {
@@ -97,46 +102,27 @@ const AddNasabah = (props) => {
     }
   };
 
-  const resetForm = () => {
-    setName('');
-    setGender('');
-    setMaritalStatus('');
-    setFatherName('');
-    setMotherName('');
-    setPhoneNumber('');
-    setBirthday('');
-    setPlaceOfBirth('');
-    setAddress('');
-    setNik('');
-    setJobTitle('');
-    setMonthlyIncome('');
-    setEmploymentStatus('');
-    setWorkAddress('');
-    setLongYearsJob('');
-  };
-
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
-        Add Nasabah
-      </Button>
+      <IconButton color="secondary" aria-label="view" size="large" onClick={() => setVisible(true)}>
+        <EditIcon />
+      </IconButton>
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
-          Create New Nasabah
+        <DialogTitle>
+          Update Nasabah
           <IconButton
             color="inherit"
             onClick={() => setVisible(false)}
             sx={{
               position: 'absolute',
               right: 8,
-              top: 8,
-              color: 'text.secondary'
+              top: 8
             }}
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <form onSubmit={createHandler}>
+        <form onSubmit={handleSubmit}>
           <DialogContent>
             <Grid container spacing={3}>
               {/* Personal Information Section */}
@@ -152,10 +138,10 @@ const AddNasabah = (props) => {
                   <Select
                     labelId="gender-select-label"
                     id="gender-select"
-                    value={gender}
+                    value={gender} // This ensures it defaults to nasabah.gender if gender is not set
                     label="Gender"
                     required
-                    onChange={(e) => setGender(e.target.value)}
+                    onChange={(e) => setGender(e.target.value)} // Update state when user selects a gender
                   >
                     <MenuItem value="Laki-laki">Laki-laki</MenuItem>
                     <MenuItem value="Perempuan">Perempuan</MenuItem>
@@ -167,7 +153,7 @@ const AddNasabah = (props) => {
                   fullWidth
                   label="Birthday"
                   variant="outlined"
-                  value={birthday}
+                  value={new Date(birthday).toISOString().split('T')[0]}
                   onChange={(e) => setBirthday(e.target.value)}
                   type="date"
                   InputLabelProps={{ shrink: true }}
@@ -186,7 +172,7 @@ const AddNasabah = (props) => {
                     onChange={(e) => setMaritalStatus(e.target.value)}
                   >
                     <MenuItem value="Belum Menikah">Belum Menikah</MenuItem>
-                    <MenuItem value="Sudah Menikah">Sudah Menikah</MenuItem>
+                    <MenuItem value="Sudah Menikah">Menikah</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -287,6 +273,7 @@ const AddNasabah = (props) => {
                   <OutlinedInput
                     onChange={(e) => setMonthlyIncome(e.target.value)}
                     type="number"
+                    value={monthlyIncome}
                     id="outlined-adornment-weight"
                     required
                     endAdornment={<InputAdornment position="end">/ Month</InputAdornment>}
@@ -352,7 +339,7 @@ const AddNasabah = (props) => {
               Cancel
             </Button>
             <Button type="submit" color="primary" disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : 'Confirm'}
+              {loading ? <CircularProgress size={24} /> : 'Save Changes'}
             </Button>
           </DialogActions>
         </form>
@@ -361,8 +348,9 @@ const AddNasabah = (props) => {
   );
 };
 
-AddNasabah.propTypes = {
+UpdateNasabah.propTypes = {
+  nasabah: propTypes.object.isRequired,
   refreshTable: propTypes.func.isRequired
 };
 
-export default AddNasabah;
+export default UpdateNasabah;

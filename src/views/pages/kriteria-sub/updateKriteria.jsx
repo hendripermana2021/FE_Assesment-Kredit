@@ -1,71 +1,93 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Accordion, AccordionDetails, AccordionSummary, Box, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
-import Swal from 'sweetalert2';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import { serverSourceDev } from 'constant/constantaEnv';
 
-const AddKriteria = ({ refreshTable }) => {
+// ==============================|| ADD NASABAH ||============================== //
+
+const UpdateKriteria = (props) => {
+  const { kriteria, refreshTable } = props;
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [nameKriteria, setNameKriteria] = useState('');
-  const [priority, setPriority] = useState(0);
-  const [type, setType] = useState(false);
-  const [subKriteria, setSubKriteria] = useState([{ name_sub: '', value: 0, description: '' }]);
+  const [nameKriteria, setNameKriteria] = useState(kriteria.name_kriteria);
+  const [priority, setPriority] = useState(kriteria.scale_priority);
+  const [type, setType] = useState(kriteria.type);
+  const [subKriteria, setSubKriteria] = useState(
+    kriteria?.sub_kriteria.map((sub) => ({
+      id: sub.id,
+      name_sub: sub.name_sub,
+      value: sub.value,
+      description: sub.description || ''
+    }))
+  );
+  const showDetails = () => {
+    setVisible(true);
+  };
 
-  const handleCreate = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const payload = {
-      name_kriteria: nameKriteria,
-      type,
-      scale_priority: priority,
-      subkriteria: subKriteria.map(({ name_sub, value, description }) => ({
-        name_sub,
-        value,
-        description
-      }))
-    };
-
     try {
-      setVisible(false);
-      const response = await axios.post(`${serverSourceDev}kriteria-sub/create`, payload, {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
+      const response = await axios.put(
+        `${serverSourceDev}kriteria-sub/update/${kriteria.id}`,
+        {
+          name_kriteria: nameKriteria,
+          scale_priority: priority,
+          type: type,
+          subkriteria: subKriteria.map((sub) => ({
+            name_sub: sub.name_sub,
+            value: sub.value,
+            description: sub.description // Include description in the request
+          }))
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
+          }
         }
-      });
+      );
 
-      console.log(response);
+      setVisible(false);
+
+      console.log('Response', response);
+
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: 'Data successfully created!',
+          title: 'Data successfully updated!',
           confirmButtonText: 'OK'
         }).then(() => {
-          resetForm();
+          setVisible(false);
           refreshTable();
-        });
-      } else if (response.status === 400) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Please change priority for kriteria!',
-          confirmButtonText: 'OK'
         });
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Failed to create data',
+        title: 'Failed to update data',
         text: error.response?.data?.message || 'An unexpected error occurred'
       });
     } finally {
@@ -73,36 +95,38 @@ const AddKriteria = ({ refreshTable }) => {
     }
   };
 
+  useEffect(() => {
+    if (kriteria?.sub_kriteria) {
+      setSubKriteria(
+        kriteria.sub_kriteria.map((sub) => ({
+          id: sub.id,
+          name_sub: sub.name_sub,
+          description: sub.description || '',
+          value: sub.value || 0
+        }))
+      );
+    }
+  }, [kriteria]);
+
   const handleSubKriteriaChange = (index, field, value) => {
     const updatedSubKriteria = [...subKriteria];
     updatedSubKriteria[index][field] = value;
     setSubKriteria(updatedSubKriteria);
   };
 
-  const addSubKriteria = () => {
-    setSubKriteria([...subKriteria, { name_sub: '', value: 0, description: '' }]);
-  };
-
-  const resetForm = () => {
-    setNameKriteria('');
-    setType(false);
-    setPriority(0);
-    setSubKriteria([{ name_sub: '', value: 0, description: '' }]);
-    setVisible(false);
-  };
-
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
-        Add Kriteria
-      </Button>
-
-      <Dialog open={visible} maxWidth="sm" onClose={resetForm}>
+      <IconButton color="secondary" aria-label="delete" size="large" onClick={() => showDetails()}>
+        <EditIcon />
+      </IconButton>
+      {/* Modal dialog */}
+      <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
         <DialogTitle sx={{ fontSize: '20px' }}>
-          Create New Kriteria
+          Detail Kriteria
+          {/* Close Icon */}
           <IconButton
             color="inherit"
-            onClick={resetForm}
+            onClick={() => setVisible(false)}
             sx={{
               position: 'absolute',
               right: 8,
@@ -113,7 +137,7 @@ const AddKriteria = ({ refreshTable }) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleUpdate}>
           <Grid container spacing={2} sx={{ padding: '1em' }}>
             <Grid item xs={12}>
               <TextField
@@ -122,20 +146,8 @@ const AddKriteria = ({ refreshTable }) => {
                 variant="outlined"
                 value={nameKriteria}
                 onChange={(e) => setNameKriteria(e.target.value)}
-                required
               />
             </Grid>
-
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="type-label">Type Kriteria</InputLabel>
-                <Select labelId="type-label" value={type} onChange={(e) => setType(e.target.value === 'true')} label="Type Kriteria">
-                  <MenuItem value="true">Profit</MenuItem>
-                  <MenuItem value="false">Cost</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -144,13 +156,27 @@ const AddKriteria = ({ refreshTable }) => {
                 variant="outlined"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                required
               />
             </Grid>
-
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth sx={{ marginBottom: 1 }}>
+                <InputLabel id="type-select-label">Type</InputLabel>
+                <Select
+                  labelId="type-select-label"
+                  id="type-select"
+                  value={type} // This ensures it defaults to nasabah.gender if gender is not set
+                  label="Gender"
+                  required
+                  onChange={(e) => setType(e.target.value)} // Update state when user selects a gender
+                >
+                  <MenuItem value={true}>Benefit</MenuItem>
+                  <MenuItem value={false}>Cost</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <Typography variant="subtitle1">Sub Kriteria</Typography>
-              {subKriteria.map((sub, index) => (
+              {kriteria.sub_kriteria.map((sub, index) => (
                 <Accordion key={index}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                     <Typography>Sub Kriteria - {index + 1}</Typography>
@@ -160,22 +186,23 @@ const AddKriteria = ({ refreshTable }) => {
                       fullWidth
                       label={`Sub Kriteria ${index + 1}`}
                       value={sub.name_sub}
-                      onChange={(e) => handleSubKriteriaChange(index, 'name_sub', e.target.value)}
                       variant="outlined"
                       margin="normal"
+                      onChange={(e) => handleSubKriteriaChange(index, 'name_sub', e.target.value)}
                       required
                     />
                     <TextField
                       fullWidth
-                      label="Value Sub-Kriteria"
+                      label={`Value Sub-Kriteria`}
                       value={sub.value}
                       type="number"
-                      onChange={(e) => handleSubKriteriaChange(index, 'value', e.target.value)}
                       variant="outlined"
                       margin="normal"
+                      onChange={(e) => handleSubKriteriaChange(index, 'value', e.target.value)}
                       required
                     />
                     <TextField
+                      id="outlined-multiline-flexible"
                       label="Description"
                       multiline
                       fullWidth
@@ -187,16 +214,12 @@ const AddKriteria = ({ refreshTable }) => {
                   </AccordionDetails>
                 </Accordion>
               ))}
-              <Button variant="contained" color="success" onClick={addSubKriteria} sx={{ mt: 2 }}>
-                Add Sub Kriteria
-              </Button>
-
               <Box sx={{ mt: 4, textAlign: 'end' }}>
-                <Button variant="outlined" color="secondary" onClick={resetForm} disabled={loading} sx={{ mr: 2 }}>
-                  Cancel
+                <Button variant="outlined" color="secondary" onClick={() => setVisible(false)} sx={{ mr: 2 }}>
+                  Close
                 </Button>
-                <Button variant="contained" color="primary" type="submit" disabled={loading}>
-                  {loading ? <CircularProgress size={24} /> : 'Confirm'}
+                <Button type="submit" color="primary" variant="outlined" disabled={loading}>
+                  {loading ? <CircularProgress size={24} /> : 'Save Changes'}
                 </Button>
               </Box>
             </Grid>
@@ -207,8 +230,9 @@ const AddKriteria = ({ refreshTable }) => {
   );
 };
 
-AddKriteria.propTypes = {
+UpdateKriteria.propTypes = {
+  kriteria: PropTypes.object.isRequired, // Prop type for kriteria object
   refreshTable: PropTypes.func.isRequired
 };
 
-export default AddKriteria;
+export default UpdateKriteria;

@@ -16,15 +16,13 @@ const RolesTable = () => {
   const [role, setRole] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(role);
-
   useEffect(() => {
-    if (!$.fn.DataTable.isDataTable('#tblNasabah')) {
+    if (!$.fn.DataTable.isDataTable('#tblRole')) {
       $(document).ready(function () {
         const tableInterval = setInterval(() => {
-          if ($('#tblNasabah').is(':visible')) {
+          if ($('#tblRole').is(':visible')) {
             clearInterval(tableInterval);
-            $('#tblNasabah').DataTable();
+            $('#tblRole').DataTable();
           }
         }, 1000);
       });
@@ -98,7 +96,7 @@ const RolesTable = () => {
             </Grid>
           </Grid>
           <CardContent>
-            <table className="table table-hover " id="tblNasabah">
+            <table className="table table-hover " id="tblRole">
               <thead>
                 <tr>
                   <th className="text-center" align="center" style={{ width: '10%' }}>

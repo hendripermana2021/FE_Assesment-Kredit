@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -70,8 +70,6 @@ const AddRoles = (props) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <>
