@@ -25,7 +25,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { serverSourceDev } from 'constant/constantaEnv';
 
-// ==============================|| ADD NASABAH ||============================== //
+// ==============================|| UPDATE Kriteria ||============================== //
 
 const UpdateKriteria = (props) => {
   const { kriteria, refreshTable } = props;
@@ -42,6 +42,7 @@ const UpdateKriteria = (props) => {
       description: sub.description || ''
     }))
   );
+
   const showDetails = () => {
     setVisible(true);
   };
@@ -116,7 +117,7 @@ const UpdateKriteria = (props) => {
 
   return (
     <>
-      <IconButton color="secondary" aria-label="delete" size="large" onClick={() => showDetails()}>
+      <IconButton color="secondary" aria-label="edit" size="large" onClick={() => showDetails()}>
         <EditIcon />
       </IconButton>
       {/* Modal dialog */}
@@ -164,10 +165,10 @@ const UpdateKriteria = (props) => {
                 <Select
                   labelId="type-select-label"
                   id="type-select"
-                  value={type} // This ensures it defaults to nasabah.gender if gender is not set
-                  label="Gender"
+                  value={type}
+                  label="Type"
                   required
-                  onChange={(e) => setType(e.target.value)} // Update state when user selects a gender
+                  onChange={(e) => setType(e.target.value)} // Update state when user selects a type
                 >
                   <MenuItem value={true}>Benefit</MenuItem>
                   <MenuItem value={false}>Cost</MenuItem>
@@ -176,9 +177,9 @@ const UpdateKriteria = (props) => {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="subtitle1">Sub Kriteria</Typography>
-              {kriteria.sub_kriteria.map((sub, index) => (
-                <Accordion key={index}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+              {subKriteria.map((sub, index) => (
+                <Accordion key={sub.id}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`panel${index}-content`} id={`panel${index}-header`}>
                     <Typography>Sub Kriteria - {index + 1}</Typography>
                   </AccordionSummary>
                   <AccordionDetails>

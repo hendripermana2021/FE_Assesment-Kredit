@@ -1,50 +1,23 @@
-// import { useEffect } from 'react';
-
 // material-ui
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import AjuanTable from './tableAjuan';
 
 // ==============================|| PAGE ROLE ||============================== //
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027'
-  })
-}));
-
-const Ajuan = () => {
+const AjuanPage = () => {
   // const [isLoading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   setLoading(false);
-  // }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
-        <Grid item xs={6} md={8}>
-          <Item>xs=6 md=8</Item>
-        </Grid>
-        <Grid item xs={6} md={4}>
-          <Item>xs=6 md=4</Item>
-        </Grid>
-        <Grid item xs={6} md={4}>
-          <Item>xs=6 md=4</Item>
-        </Grid>
-        <Grid item xs={6} md={8}>
-          <Item>xs=6 md=8</Item>
+        <Grid item xs={12} md={12} sm={6}>
+          <AjuanTable />
         </Grid>
       </Grid>
     </Box>
   );
 };
 
-export default Ajuan;
+export default AjuanPage;

@@ -49,8 +49,6 @@ const NasabahTable = () => {
           title: 'Data Tidak Ada',
           text: 'Maaf Data tidak ditemukan atau belum dibuat'
         });
-      } else {
-        handleError(error, 'Error fetching Role data');
       }
       console.log(error, 'Error fetching data');
       setLoading(false);

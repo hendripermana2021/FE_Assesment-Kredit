@@ -76,10 +76,17 @@ const MainLayout = () => {
         title: 'Authentication Required',
         text: 'You need to login to access this page.',
         icon: 'warning',
-        confirmButtonText: 'Login'
+        confirmButtonText: 'Login',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       }).then(() => {
         // Redirect to login page
-        window.location.href = '/pages/login/login3';
+        window.location.href = '/login';
       });
     } else {
       // Token exists

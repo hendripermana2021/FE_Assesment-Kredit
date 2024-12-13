@@ -28,6 +28,8 @@ import { Stack } from '@mui/system';
 import DetailKriteria from './detailKriteria';
 import UpdateKriteria from './updateKriteria';
 import DetailSubKriteria from './detailSub';
+import UpdateSubKriteria from './updateSubKriteria';
+import AddSubKriteria from './addSubKriteria';
 
 const KriteriaTable = () => {
   const [kriteria, setKriteria] = useState([]);
@@ -113,9 +115,12 @@ const KriteriaTable = () => {
       <CardHeader title="Kriteria dan Sub-Kriteria" subheader="Ini adalah halaman untuk mengatur data Kriteria dan Sub-Kriteria" />
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item xs={8}></Grid>
-          <Grid item xs={4} sx={{ textAlign: 'right' }}>
-            <AddKriteria refreshTable={getKriteria} />
+          <Grid item xs={9}></Grid>
+          <Grid item xs={3} sx={{ textAlign: 'end', width: '100%' }}>
+            <Stack direction="row" spacing={1}>
+              <AddKriteria refreshTable={getKriteria} />
+              <AddSubKriteria refreshTable={getKriteria} />
+            </Stack>
           </Grid>
         </Grid>
 
@@ -171,6 +176,7 @@ const KriteriaTable = () => {
                                     </TableCell>
                                     <TableCell align="center">
                                       <Stack direction="row" spacing={1}>
+                                        <UpdateSubKriteria sub={sub} refreshTable={getKriteria} />
                                         <DetailSubKriteria sub={sub} />
                                         <IconButton color="error" onClick={() => deleteSub(sub)}>
                                           <DeleteIcon />

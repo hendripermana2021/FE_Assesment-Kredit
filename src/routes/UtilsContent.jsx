@@ -3,7 +3,7 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
-
+import AjuanPage from 'views/pages/ajuan-kredit';
 
 // utilities routing
 const RolePage = Loadable(lazy(() => import('views/pages/role-users/index')));
@@ -18,7 +18,7 @@ const UtilsContent = {
   children: [
     {
       path: 'ajuan-kredit',
-      element: <RolePage />
+      element: <AjuanPage />
     },
     {
       path: 'hitung',
@@ -31,7 +31,7 @@ const UtilsContent = {
     {
       path: 'history',
       element: <RolePage />
-    },
+    }
   ]
 };
 

@@ -114,7 +114,7 @@ const UpdateRoles = (props) => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
+          <DialogActions sx={{ textAlign: 'end', padding: '1em' }}>
             <Button color="primary" type="submit" onClick={() => setVisible(false)}>
               {loading ? 'Saving...' : 'Save changes'}
             </Button>
