@@ -11,6 +11,7 @@ import { Stack } from '@mui/system';
 // import UpdateAjuan from './updateAjuan';
 import DetailAjuan from './detailAjuan';
 import AddAjuan from './addAjuan';
+import UpdateAjuan from './updateAjuan';
 
 const AjuanTable = () => {
   const [ajuan, setAjuan] = useState([]);
@@ -134,7 +135,7 @@ const AjuanTable = () => {
                       <td className="text-center">
                         <Stack direction="row" spacing={1}>
                           {/* Update Button */}
-                          {/* <UpdateAjuan ajuan={value} refreshTable={getAjuan} /> */}
+                          <UpdateAjuan ajuan={value} refreshTable={getAjuan} />
                           {/* Detail Button */}
                           <DetailAjuan ajuan={value} />
                           <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>

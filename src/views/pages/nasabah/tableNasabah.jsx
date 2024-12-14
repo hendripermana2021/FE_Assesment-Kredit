@@ -115,11 +115,11 @@ const NasabahTable = () => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="9">Loading...</td>
+                    <td colSpan="8">Loading...</td>
                   </tr>
                 ) : nasabah.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="text-center">
+                    <td colSpan="8" className="text-center">
                       No Nasabah available
                     </td>
                   </tr>
@@ -127,7 +127,7 @@ const NasabahTable = () => {
                   nasabah.map((value, index) => (
                     <tr key={index}>
                       {/* <td className="text-center">{index + 1}</td> */}
-                      <td>{index + 1}</td> {/* Assuming name is 'name' */}
+                      <td>{value.id}</td> {/* Assuming name is 'name' */}
                       <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
                       <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
                       <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}

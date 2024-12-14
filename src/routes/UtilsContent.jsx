@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import AjuanPage from 'views/pages/ajuan-kredit';
+import GeneratedPage from 'views/pages/cpi-roc';
 
 // utilities routing
 const RolePage = Loadable(lazy(() => import('views/pages/role-users/index')));
@@ -22,11 +23,11 @@ const UtilsContent = {
     },
     {
       path: 'hitung',
-      element: <RolePage />
+      element: <GeneratedPage />
     },
     {
       path: 'generated',
-      element: <RolePage />
+      element: <GeneratedPage />
     },
     {
       path: 'history',

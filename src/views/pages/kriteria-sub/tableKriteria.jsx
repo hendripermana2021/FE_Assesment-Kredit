@@ -163,8 +163,8 @@ const KriteriaTable = () => {
                             <TableBody>
                               {data.sub_kriteria.length > 0 ? (
                                 data.sub_kriteria.map((sub, index) => (
-                                  <TableRow key={sub.id}>
-                                    <TableCell align="center">{index + 1}</TableCell>
+                                  <TableRow key={index}>
+                                    <TableCell align="center">{sub.id}</TableCell>
                                     <TableCell align="center">{sub.name_sub}</TableCell>
                                     <TableCell align="center">{sub.value}</TableCell>
                                     <TableCell align="center">
