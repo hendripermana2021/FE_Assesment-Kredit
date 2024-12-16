@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import Swal for alerts
-
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -26,6 +24,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { serverSourceDev } from 'constant/constantaEnv';
+import { swalError, swalSuccess } from 'constant/functionGlobal';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -68,11 +67,7 @@ const AuthLogin = () => {
       sessionStorage.setItem('accessToken', token); // Store token in sessionStorage
       setIsSubmitting(false);
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Login Success',
-        text: 'You have successfully logged in!'
-      }).then(() => {
+      swalSuccess(`Success Login with Email and Password`).then(() => {
         navigate('/dashboard'); // Redirect to dashboard after successful login
       });
     } catch (error) {
@@ -80,11 +75,7 @@ const AuthLogin = () => {
 
       if (error.response) {
         console.error(error.response.data);
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: 'Invalid username or password'
-        });
+        swalError(`Error for login`);
       }
     }
   };

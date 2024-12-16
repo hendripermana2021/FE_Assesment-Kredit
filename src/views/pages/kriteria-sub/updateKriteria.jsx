@@ -79,7 +79,14 @@ const UpdateKriteria = (props) => {
         Swal.fire({
           icon: 'success',
           title: 'Data successfully updated!',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         }).then(() => {
           setVisible(false);
           refreshTable();
@@ -89,7 +96,14 @@ const UpdateKriteria = (props) => {
       Swal.fire({
         icon: 'error',
         title: 'Failed to update data',
-        text: error.response?.data?.message || 'An unexpected error occurred'
+        text: error.response?.data?.message || 'An unexpected error occurred',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     } finally {
       setLoading(false);

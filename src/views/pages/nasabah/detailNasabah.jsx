@@ -125,7 +125,7 @@ const DetailNasabah = ({ nasabah }) => {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button variant="outlined" onClick={() => setVisible(false)} color="secondary">
               Close
             </Button>
           </DialogActions>

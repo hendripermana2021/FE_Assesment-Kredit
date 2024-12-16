@@ -36,7 +36,17 @@ const UpdateRoles = (props) => {
     // Form validation
     if (!roleName) {
       setLoading(false);
-      return Swal.fire({ icon: 'error', title: 'Name role tidak boleh kosong' });
+      return Swal.fire({
+        icon: 'error',
+        title: 'Name role tidak boleh kosong',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
+      });
     }
 
     try {
@@ -57,7 +67,14 @@ const UpdateRoles = (props) => {
         // Usually, 201 is returned for a successful creation
         Swal.fire({
           icon: 'success',
-          title: 'Data Success Updated' // Changed title for clarity
+          title: 'Data Success Updated', // Changed title for clarity
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         }).then(() => {
           setVisible(false);
           refreshTable();
@@ -68,7 +85,14 @@ const UpdateRoles = (props) => {
       Swal.fire({
         icon: 'error',
         title: 'Error creating data',
-        text: error.message
+        text: error.message,
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     } finally {
       setLoading(false);
@@ -81,10 +105,10 @@ const UpdateRoles = (props) => {
         <EditIcon />
       </IconButton>
       {/* Modal dialog to show role details */}
-      <Dialog open={visible} maxWidth="sm" fullWidth={false} onClose={() => setVisible(false)}>
+      <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
         <form onSubmit={updateHandler}>
-          <DialogTitle>
-            Role Details
+          <DialogTitle sx={{ fontSize: '1em' }}>
+            Update Role
             {/* Close Icon */}
             <IconButton
               color="inherit"
@@ -115,10 +139,10 @@ const UpdateRoles = (props) => {
             </Grid>
           </DialogContent>
           <DialogActions sx={{ textAlign: 'end', padding: '1em' }}>
-            <Button color="primary" type="submit" onClick={() => setVisible(false)}>
+            <Button color="primary" type="submit" variant="outlined" onClick={() => setVisible(false)}>
               {loading ? 'Saving...' : 'Save changes'}
             </Button>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button onClick={() => setVisible(false)} variant="outlined" color="secondary">
               Close
             </Button>
           </DialogActions>

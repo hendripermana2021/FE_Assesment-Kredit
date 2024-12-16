@@ -57,7 +57,14 @@ const TableUsers = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      willOpen: () => {
+        // Apply inline CSS to set z-index for SweetAlert modal
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) {
+          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+        }
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -67,7 +74,18 @@ const TableUsers = () => {
             }
           });
           getUsers(); // Reload the data after deletion
-          Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+          Swal.fire({
+            title: 'Success Deleted?',
+            text: 'Success for delete this data.',
+            icon: 'success',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
+            }
+          });
         } catch (error) {
           Swal.fire('Error!', 'Your data cannot be deleted.', 'error');
           console.error('Error deleting data:', error);

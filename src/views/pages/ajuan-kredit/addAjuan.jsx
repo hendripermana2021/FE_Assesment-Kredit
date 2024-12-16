@@ -9,11 +9,11 @@ import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
 import { Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { swalConfirm, swalError } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -46,17 +46,7 @@ const AddAjuan = (props) => {
 
     if (!jlhDana) {
       setLoading(false);
-      return Swal.fire({
-        icon: 'error',
-        title: 'Please fill in all required fields',
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
-      });
+      swalError('please fill every field');
     }
 
     const payload = {
@@ -80,35 +70,14 @@ const AddAjuan = (props) => {
       });
 
       if (response.status === 201) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data Berhasil Ditambahkan',
-          willOpen: () => {
-            // Apply inline CSS to set z-index for SweetAlert modal
-            const swalContainer = document.querySelector('.swal2-container');
-            if (swalContainer) {
-              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-            }
-          }
-        }).then(() => {
+        swalConfirm(`Success for added new ajuan`).then(() => {
           setVisible(false);
           refreshTable();
           resetForm();
         });
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error creating data',
-        text: error.message,
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
-      });
+      swalError(`Error for creating data ajuan`);
     } finally {
       setLoading(false);
     }
@@ -127,11 +96,7 @@ const AddAjuan = (props) => {
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.response.status === 404) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Data Tidak Ada',
-          text: 'Maaf Data tidak ditemukan atau belum dibuat'
-        });
+        swalError('Data Not Found, pleas');
       }
       console.log(error, 'Error fetching data');
       setLoading(false);
@@ -151,11 +116,7 @@ const AddAjuan = (props) => {
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.response.status === 404) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Data Tidak Ada',
-          text: 'Maaf Data tidak ditemukan atau belum dibuat'
-        });
+        swalError(`Data Not Found,`);
       }
       console.log(error, 'Error fetching data');
       setLoading(false);

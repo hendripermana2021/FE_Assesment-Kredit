@@ -102,7 +102,14 @@ const UpdateUsers = (props) => {
         Swal.fire({
           icon: 'success',
           title: 'User successfully updated!',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         }).then(() => {
           setVisible(false);
           refreshTable(); // Refresh table data
@@ -114,7 +121,14 @@ const UpdateUsers = (props) => {
       Swal.fire({
         icon: 'error',
         title: 'Failed to update user',
-        text: error.response?.data?.message || 'An unexpected error occurred'
+        text: error.response?.data?.message || 'An unexpected error occurred',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     } finally {
       setLoading(false);

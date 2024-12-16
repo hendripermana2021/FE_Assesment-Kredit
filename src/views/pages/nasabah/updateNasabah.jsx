@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import propTypes from 'prop-types';
 import { serverSourceDev } from 'constant/constantaEnv';
+import { swalError, swalSuccess } from 'constant/functionGlobal';
 
 const UpdateNasabah = (props) => {
   const { refreshTable, nasabah } = props;
@@ -52,7 +53,14 @@ const UpdateNasabah = (props) => {
     if (!name | !gender | !maritalStatus || !fatherName || !motherName || !phoneNumber) {
       return Swal.fire({
         icon: 'error',
-        title: 'Please fill dont empty cause it, required fields'
+        title: 'Please fill dont empty cause it, required fields',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     }
     setVisible(false);
@@ -83,20 +91,13 @@ const UpdateNasabah = (props) => {
       );
 
       if (response.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data Updated Successfully'
-        }).then(() => {
+        swalSuccess(`Success updated data`).then(() => {
           setVisible(false);
           refreshTable();
         });
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error Updating Data',
-        text: error.message
-      });
+      swalError(`Error updating data`);
     } finally {
       setLoading(false);
     }
@@ -104,11 +105,11 @@ const UpdateNasabah = (props) => {
 
   return (
     <>
-      <IconButton color="secondary" aria-label="view" size="large" onClick={() => setVisible(true)}>
+      <IconButton color="info" aria-label="view" size="large" onClick={() => setVisible(true)}>
         <EditIcon />
       </IconButton>
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle>
+        <DialogTitle sx={{ fontSize: '1.5em' }}>
           Update Nasabah
           <IconButton
             color="inherit"
@@ -335,10 +336,10 @@ const UpdateNasabah = (props) => {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button variant="outlined" onClick={() => setVisible(false)} color="secondary">
               Cancel
             </Button>
-            <Button type="submit" color="primary" disabled={loading}>
+            <Button type="submit" variant="outlined" color="primary" disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Save Changes'}
             </Button>
           </DialogActions>

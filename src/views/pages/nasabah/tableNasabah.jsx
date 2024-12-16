@@ -6,11 +6,11 @@ import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import $ from 'jquery';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import { Stack } from '@mui/system';
 import AddNasabah from './addNasabah';
 import DetailNasabah from './detailNasabah';
 import UpdateNasabah from './updateNasabah';
+import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
 
 const NasabahTable = () => {
   const [nasabah, setNasabah] = useState([]);
@@ -44,11 +44,7 @@ const NasabahTable = () => {
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.response.status === 404) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Data Tidak Ada',
-          text: 'Maaf Data tidak ditemukan atau belum dibuat'
-        });
+        swalError('Error for getting data');
       }
       console.log(error, 'Error fetching data');
       setLoading(false);
@@ -56,15 +52,7 @@ const NasabahTable = () => {
   };
 
   const deleteHandler = async (data) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then(async (result) => {
+    swalConfirm('Are you sure, for deleting this data?').then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`${serverSourceDev}nasabah/delete/${data.id}`, {
@@ -73,10 +61,10 @@ const NasabahTable = () => {
             }
           });
           getNasabah();
-          Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+          swalSuccess(`Success deleted data.`);
         } catch (error) {
           console.error('Error deleting data:', error);
-          Swal.fire('Error!', 'Your data cannot be deleted.', 'error');
+          swalError('Error deleting data');
         }
       }
     });
@@ -113,41 +101,33 @@ const NasabahTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="8">Loading...</td>
-                  </tr>
-                ) : nasabah.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="text-center">
-                      No Nasabah available
-                    </td>
-                  </tr>
-                ) : (
-                  nasabah.map((value, index) => (
-                    <tr key={index}>
-                      {/* <td className="text-center">{index + 1}</td> */}
-                      <td>{value.id}</td> {/* Assuming name is 'name' */}
-                      <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
-                      <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
-                      <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}
-                      <td>{value.nik || ''}</td> {/* Assuming NIK is 'nik' */}
-                      <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
-                      <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
-                      <td className="text-center">
-                        <Stack direction="row" spacing={1}>
-                          {/* Update Button */}
-                          <UpdateNasabah nasabah={value} refreshTable={getNasabah} />
-                          {/* Detail Button */}
-                          <DetailNasabah nasabah={value} />
-                          <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Stack>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {loading
+                  ? ''
+                  : nasabah.length === 0
+                    ? ''
+                    : nasabah.map((value, index) => (
+                        <tr key={index}>
+                          {/* <td className="text-center">{index + 1}</td> */}
+                          <td>{value.id}</td> {/* Assuming name is 'name' */}
+                          <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
+                          <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
+                          <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}
+                          <td>{value.nik || ''}</td> {/* Assuming NIK is 'nik' */}
+                          <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
+                          <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
+                          <td className="text-center">
+                            <Stack direction="row" spacing={1}>
+                              {/* Update Button */}
+                              <UpdateNasabah nasabah={value} refreshTable={getNasabah} />
+                              {/* Detail Button */}
+                              <DetailNasabah nasabah={value} />
+                              <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Stack>
+                          </td>
+                        </tr>
+                      ))}
               </tbody>
             </table>
           </CardContent>

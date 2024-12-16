@@ -30,20 +30,6 @@ const utilities = {
       type: 'item',
       url: '/utils/hitung',
       icon: icons.IconCalculator // Represents calculations or math
-    },
-    {
-      id: 'generated',
-      title: 'Generated Report',
-      type: 'item',
-      url: '/utils/generated',
-      icon: icons.IconReport // Represents reports
-    },
-    {
-      id: 'history',
-      title: 'History Acceptable',
-      type: 'item',
-      url: '/utils/history',
-      icon: icons.IconHistory // Represents historical data or logs
     }
   ]
 };

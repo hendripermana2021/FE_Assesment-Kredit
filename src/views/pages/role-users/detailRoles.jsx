@@ -29,8 +29,8 @@ const DetailRoles = ({ role }) => {
         <VisibilityIcon />
       </IconButton>
       {/* Modal dialog to show role details */}
-      <Dialog open={visible} maxWidth="sm" fullWidth={false} onClose={() => setVisible(false)}>
-        <DialogTitle>
+      <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
+        <DialogTitle sx={{ fontSize: '1em' }}>
           Role Details
           {/* Close Icon */}
           <IconButton
@@ -50,12 +50,12 @@ const DetailRoles = ({ role }) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {/* Displaying role details (Read-only) */}
-              <TextField fullWidth label="Role Name" variant="outlined" sx={{ mt: 1 }} value={role.role_name || ''} disabled />
+              <TextField fullWidth label="Role Name" variant="outlined" sx={{ mt: 1 }} value={role.role_name || ''} readOnly />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setVisible(false)} color="secondary">
+          <Button variant="outlined" onClick={() => setVisible(false)} color="secondary">
             Close
           </Button>
         </DialogActions>

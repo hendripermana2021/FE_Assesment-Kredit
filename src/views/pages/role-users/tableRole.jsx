@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconButton, Card, CardHeader, CardContent, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverSourceDev } from 'constant/constantaEnv';
@@ -42,7 +42,14 @@ const RolesTable = () => {
         Swal.fire({
           icon: 'error',
           title: 'Data Tidak Ada',
-          text: 'Maaf Data tidak ditemukan atau belum dibuat'
+          text: 'Maaf Data tidak ditemukan atau belum dibuat',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         });
       }
       console.log(error, 'Error fetching data');
@@ -58,7 +65,14 @@ const RolesTable = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      willOpen: () => {
+        // Apply inline CSS to set z-index for SweetAlert modal
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) {
+          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+        }
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -68,10 +82,32 @@ const RolesTable = () => {
             }
           });
           getRole();
-          Swal.fire('Deleted!', 'Your data has been deleted.', 'success');
+          Swal.fire({
+            title: 'Success Deleted?',
+            text: 'Success for delete this data.',
+            icon: 'success',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
+            }
+          });
         } catch (error) {
           console.error('Error deleting data:', error);
-          Swal.fire('Error!', 'Your data cannot be deleted.', 'error');
+          Swal.fire({
+            title: 'Error',
+            text: 'Error for handle or run this action.',
+            icon: 'error',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
+            }
+          });
         }
       }
     });
@@ -109,35 +145,29 @@ const RolesTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="3">Loading...</td>
-                  </tr>
-                ) : role.length === 0 ? (
-                  <tr>
-                    <td colSpan="3" className="text-center">
-                      No Role available
-                    </td>
-                  </tr>
-                ) : (
-                  role.map((roles, index) => (
-                    <tr key={index}>
-                      <td className="text-center">{index + 1}</td>
-                      <td>{roles.role_name}</td>
-                      <td className="text-center">
-                        <Stack direction="row" spacing={1}>
-                          {/* Update Button */}
-                          <UpdateRoles role={roles} refreshTable={getRole} />
-                          {/* Detail Button */}
-                          <DetailRoles role={roles} />
-                          <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(roles)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Stack>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {loading
+                  ? ''
+                  : role.length === 0
+                    ? ''
+                    : role.map((roles, index) => (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td className="text-center">{index + 1}</td>
+                            <td>{roles.role_name}</td>
+                            <td className="text-center">
+                              <Stack direction="row" spacing={1}>
+                                {/* Update Button */}
+                                <UpdateRoles role={roles} refreshTable={getRole} />
+                                {/* Detail Button */}
+                                <DetailRoles role={roles} />
+                                <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(roles)}>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Stack>
+                            </td>
+                          </tr>
+                        </React.Fragment>
+                      ))}
               </tbody>
             </table>
           </CardContent>

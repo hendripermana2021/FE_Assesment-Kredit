@@ -10,9 +10,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Accordion, AccordionDetails, AccordionSummary, Box, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
+import { swalError, swalSuccess } from 'constant/functionGlobal';
 
 const AddKriteria = ({ refreshTable }) => {
   const [loading, setLoading] = useState(false);
@@ -47,27 +47,15 @@ const AddKriteria = ({ refreshTable }) => {
 
       console.log(response);
       if (response.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data successfully created!',
-          confirmButtonText: 'OK'
-        }).then(() => {
+        swalSuccess(`success create data`).then(() => {
           resetForm();
           refreshTable();
         });
       } else if (response.status === 400) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Please change priority for kriteria!',
-          confirmButtonText: 'OK'
-        });
+        swalError(`Bad Request you got it`);
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to create data',
-        text: error.response?.data?.message || 'An unexpected error occurred'
-      });
+      swalError(`Error Creating data`);
     } finally {
       setLoading(false);
     }

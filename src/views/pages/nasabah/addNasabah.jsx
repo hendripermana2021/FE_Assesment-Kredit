@@ -14,6 +14,7 @@ import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
 import { Divider, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { swalConfirm, swalError } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -77,21 +78,14 @@ const AddNasabah = (props) => {
       );
 
       if (response.status === 201) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Data Berhasil Ditambahkan'
-        }).then(() => {
+        swalConfirm('Success for create data').then(() => {
           setVisible(false);
           refreshTable();
           resetForm();
         });
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error creating data',
-        text: error.message
-      });
+      swalError('Error for create this data');
     } finally {
       setLoading(false);
     }
@@ -348,10 +342,10 @@ const AddNasabah = (props) => {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button onClick={() => setVisible(false)} color="secondary" variant="outlined">
               Cancel
             </Button>
-            <Button type="submit" color="primary" disabled={loading}>
+            <Button type="submit" color="primary" variant="outlined" disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Confirm'}
             </Button>
           </DialogActions>

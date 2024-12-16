@@ -52,7 +52,14 @@ const KriteriaTable = () => {
       Swal.fire({
         icon: 'error',
         title: error.response?.status === 404 ? 'Data Tidak Ada' : 'Error',
-        text: 'Maaf Data tidak ditemukan atau terjadi kesalahan'
+        text: 'Maaf Data tidak ditemukan atau terjadi kesalahan',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
       setLoading(false);
     }
@@ -66,7 +73,14 @@ const KriteriaTable = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      willOpen: () => {
+        // Apply inline CSS to set z-index for SweetAlert modal
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) {
+          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+        }
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -76,7 +90,18 @@ const KriteriaTable = () => {
             }
           });
           getKriteria(); // Reload the data after deletion
-          Swal.fire('Deleted!', 'Your kriteria data has been deleted.', 'success');
+          Swal.fire({
+            title: 'Success Deleted?',
+            text: 'Success for delete this data.',
+            icon: 'success',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
+            }
+          });
         } catch (error) {
           Swal.fire('Error!', 'Your kriteria data cannot be deleted.', 'error');
         }
@@ -92,7 +117,14 @@ const KriteriaTable = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      willOpen: () => {
+        // Apply inline CSS to set z-index for SweetAlert modal
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) {
+          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+        }
+      }
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -102,9 +134,26 @@ const KriteriaTable = () => {
             }
           });
           getKriteria(); // Reload the data after deletion
-          Swal.fire('Deleted!', 'Sub-Kriteria has been deleted.', 'success');
+          Swal.fire({
+            title: 'Success Deleted?',
+            text: 'Success for delete this data.',
+            icon: 'success',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
+            }
+          });
         } catch (error) {
-          Swal.fire('Error!', 'Sub-Kriteria cannot be deleted.', 'error');
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          };
         }
       }
     });

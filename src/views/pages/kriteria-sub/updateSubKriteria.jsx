@@ -50,7 +50,14 @@ const UpdateSubKriteria = (props) => {
         Swal.fire({
           icon: 'error',
           title: 'Data Tidak Ada',
-          text: 'Maaf Data tidak ditemukan atau belum dibuat'
+          text: 'Maaf Data tidak ditemukan atau belum dibuat',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         });
       }
       console.log(error, 'Error fetching data');
@@ -83,7 +90,14 @@ const UpdateSubKriteria = (props) => {
         Swal.fire({
           icon: 'success',
           title: 'Sub Kriteria successfully updated!',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         }).then(() => {
           setVisible(false);
           refreshTable();
@@ -93,7 +107,14 @@ const UpdateSubKriteria = (props) => {
       Swal.fire({
         icon: 'error',
         title: 'Failed to update Sub Kriteria',
-        text: error.response?.data?.message || 'An unexpected error occurred'
+        text: error.response?.data?.message || 'An unexpected error occurred',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     }
   };

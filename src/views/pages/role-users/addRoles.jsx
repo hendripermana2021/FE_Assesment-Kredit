@@ -31,7 +31,17 @@ const AddRoles = (props) => {
     // Form validation
     if (!roleName) {
       setLoading(false);
-      return Swal.fire({ icon: 'error', title: 'Name role tidak boleh kosong' });
+      return Swal.fire({
+        icon: 'error',
+        title: 'Name role tidak boleh kosong',
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
+      });
     }
 
     try {
@@ -52,7 +62,14 @@ const AddRoles = (props) => {
         // Usually, 201 is returned for a successful creation
         Swal.fire({
           icon: 'success',
-          title: 'Data Berhasil Ditambahkan' // Changed title for clarity
+          title: 'Data Berhasil Ditambahkan', // Changed title for clarity
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
         }).then(() => {
           setVisible(false);
           refreshTable();
@@ -64,7 +81,14 @@ const AddRoles = (props) => {
       Swal.fire({
         icon: 'error',
         title: 'Error creating data',
-        text: error.message
+        text: error.message,
+        willOpen: () => {
+          // Apply inline CSS to set z-index for SweetAlert modal
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          }
+        }
       });
     } finally {
       setLoading(false);
@@ -77,8 +101,8 @@ const AddRoles = (props) => {
         Add Role
       </Button>
       {/* Modal dialog */}
-      <Dialog open={visible} maxWidth="sm" fullWidth={false} onClose={() => setVisible(false)}>
-        <DialogTitle>
+      <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
+        <DialogTitle sx={{ fontSize: '1.3em' }}>
           Create New Role
           {/* Close Icon */}
           <IconButton
@@ -99,6 +123,7 @@ const AddRoles = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
+                  autoFocus
                   fullWidth
                   label="Role Name"
                   variant="outlined"
@@ -110,10 +135,10 @@ const AddRoles = (props) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button onClick={() => setVisible(false)} variant="outlined" color="secondary">
               Cancel
             </Button>
-            <Button type="submit" color="primary" disabled={loading} onClick={() => setVisible(false)}>
+            <Button type="submit" variant="outlined" color="primary" disabled={loading} onClick={() => setVisible(false)}>
               {loading ? <CircularProgress size={24} /> : 'Confirm'}
             </Button>
           </DialogActions>

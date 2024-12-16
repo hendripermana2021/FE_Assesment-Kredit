@@ -19,7 +19,7 @@ import { drawerWidth } from 'store/constant';
 // assets
 import { IconChevronRight } from '@tabler/icons-react';
 import { useEffect } from 'react';
-import Swal from 'sweetalert2';
+import { swalError } from 'constant/functionGlobal';
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'theme' })(({ theme, open }) => ({
   ...theme.typography.mainContent,
@@ -72,19 +72,7 @@ const MainLayout = () => {
   useEffect(() => {
     if (!token) {
       // If token doesn't exist, show SweetAlert
-      Swal.fire({
-        title: 'Authentication Required',
-        text: 'You need to login to access this page.',
-        icon: 'warning',
-        confirmButtonText: 'Login',
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
-      }).then(() => {
+      swalError('Youre not allowed to this page, please login first').then(() => {
         // Redirect to login page
         window.location.href = '/login';
       });
