@@ -27,7 +27,7 @@ const DetailSubKriteria = (props) => {
       </IconButton>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Detail Kriteria
           {/* Close Icon */}
           <IconButton

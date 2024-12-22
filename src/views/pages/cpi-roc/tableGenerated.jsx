@@ -29,7 +29,9 @@ import { Stack } from '@mui/system';
 import DetailGenerated from './detailGenerated';
 import { ExpandMore } from '@mui/icons-material';
 import { IconEye } from '@tabler/icons-react';
-import { formatRupiah, swalError, swalSuccess, toDecimal } from 'constant/functionGlobal';
+import { swalError, swalSuccess, toDecimal } from 'constant/functionGlobal';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 // import UpdateAjuan from './updateAjuan';
 
 const GeneratedTable = () => {
@@ -67,7 +69,7 @@ const GeneratedTable = () => {
 
   const getAjuan = async () => {
     try {
-      const response = await axios.get(`${serverSourceDev}ajuan`, {
+      const response = await axios.get(`${serverSourceDev}ajuan/generated`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
@@ -77,9 +79,6 @@ const GeneratedTable = () => {
       console.log(response.data.data);
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
-      if (error.response.status === 404) {
-        swalError(`Error getting data `);
-      }
       console.log(error, 'Error fetching data');
       setLoading(false);
     }
@@ -97,6 +96,7 @@ const GeneratedTable = () => {
     } catch (error) {
       swalError(`Error f`);
       setLoading(false);
+      console.log(error, 'Error fetching data');
     }
   };
 
@@ -132,6 +132,8 @@ const GeneratedTable = () => {
         } catch (error) {
           console.log('TOken for generated ROC :', sessionStorage.getItem('accessToken'));
           swalError('Error generating ROC');
+
+          console.log('ERROR ROC', error);
         }
       }
     });
@@ -166,8 +168,7 @@ const GeneratedTable = () => {
           console.log('data CPI generated : ', response.data.data);
           swalSuccess(`Successfully generated CPI`);
         } catch (error) {
-          console.log('TOken for generated CPI :', sessionStorage.getItem('accessToken'));
-          swalError(`Error for generating CPI`);
+          console.log('ERROR CPI', error);
         }
       }
     });
@@ -190,10 +191,10 @@ const GeneratedTable = () => {
         value?.nasabah?.name_nasabah || '-',
         value?.nasabah?.gender || '-',
         value?.nasabah?.nik || '-',
-        formatRupiah(value.jlh_dana || 0),
+        // formatRupiah(value.jlh_dana || 0),
         value?.petugas_pengaju?.name_user || '-',
-        value?.createdAt || 0,
-        value?.cpi_result || 0,
+        new Date(value?.createdAt).toISOString().split('T')[0] || 0,
+        toDecimal(value?.cpi_result) || 0,
         value?.rank || 'N/A',
         value?.status_ajuan || 'Belum Di ACC'
       ];
@@ -226,15 +227,15 @@ const GeneratedTable = () => {
     <>
       <Card>
         <CardHeader
-          title="Data Ajuan"
+          title="Page Generated CPI dan ROC"
           subheader="Ini adalah page table untuk melihat data nasabah, yang ingin melakukan pengajuan kredit, dan telah ditambahkan oleh petugas"
         />
         <CardContent>
           <Card variant="outlined" sx={{ boxShadow: 3, padding: '2em' }}>
             <Grid container spacing={2}>
               {' '}
-              <Grid item xs={8} md={8} sm={4}></Grid>
-              <Grid item xs={4} md={4} sm={2} sx={{ textAlign: 'end' }}>
+              <Grid item xs={4} md={4} sm={4}></Grid>
+              <Grid item xs={8} md={8} sm={2} sx={{ textAlign: 'end' }}>
                 <Button variant="outlined" color="secondary" onClick={() => countROC()} sx={{ marginRight: '1em' }}>
                   Generated ROC
                 </Button>
@@ -263,46 +264,46 @@ const GeneratedTable = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="9">Loading...</td>
-                    </tr>
-                  ) : ajuan.length === 0 ? (
-                    <tr>
-                      <td colSpan="9" className="text-center">
-                        No Ajuan available
-                      </td>
-                    </tr>
-                  ) : (
-                    ajuan.map((value, index) => (
-                      <tr key={index}>
-                        {/* <td className="text-center">{index + 1}</td> */}
-                        <td>{index + 1}</td> {/* Assuming name is 'name' */}
-                        <td>{value.nasabah?.name_nasabah || ''}</td> {/* Assuming name is 'name' */}
-                        <td className="text-center">{value.nasabah?.gender || ''}</td> {/* Assuming gender is 'gender' */}
-                        <td>{value.nasabah?.nik || ''}</td> {/* Assuming address is 'address' */}
-                        <td>{value.petugas_pengaju == null || '' ? '' : value.petugas_pengaju.name_user}</td>{' '}
-                        {/* Assuming Pengaju is 'pengaju' */}
-                        <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
-                        <td>
-                          {typeof value.cpi_result === 'number'
-                            ? new Intl.NumberFormat('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                              }).format(value.cpi_result)
-                            : value.cpi_result}
-                        </td>
-                        <td>{value.status_ajuan}</td>
-                        <td>{value.rank || 'No Rank'}</td>
-                        <td className="text-center">
-                          <Stack direction="row" spacing={1}>
-                            {/* Detail Button */}
-                            <DetailGenerated generated={value} />
-                          </Stack>
-                        </td>
-                      </tr>
-                    ))
-                  )}
+                  {loading
+                    ? ''
+                    : ajuan.length === 0
+                      ? ''
+                      : ajuan.map((value, index) => (
+                          <tr key={index}>
+                            {/* <td className="text-center">{index + 1}</td> */}
+                            <td>{index + 1}</td> {/* Assuming name is 'name' */}
+                            <td>{value.nasabah?.name_nasabah || ''}</td> {/* Assuming name is 'name' */}
+                            <td className="text-center">{value.nasabah?.gender || ''}</td> {/* Assuming gender is 'gender' */}
+                            <td>{value.nasabah?.nik || ''}</td> {/* Assuming address is 'address' */}
+                            <td>{value.petugas_pengaju == null || '' ? '' : value.petugas_pengaju.name_user}</td>{' '}
+                            {/* Assuming Pengaju is 'pengaju' */}
+                            <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
+                            <td>
+                              {typeof value.cpi_result === 'number'
+                                ? new Intl.NumberFormat('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                  }).format(value.cpi_result)
+                                : value.cpi_result}
+                            </td>
+                            <td>
+                              {value.status_ajuan == 'Aktif' ? (
+                                <Chip size="large" variant="outlined" label={value.status_ajuan} color="info" />
+                              ) : value.status_ajuan == 'Diterima' ? (
+                                <Chip size="large" variant="outlined" label={value.status_ajuan} color="success" />
+                              ) : (
+                                <Chip size="large" variant="outlined" label={value.status_ajuan} color="error" />
+                              )}
+                            </td>
+                            <td>{value.rank || 'No Rank'}</td>
+                            <td className="text-center">
+                              <Stack direction="row" spacing={1}>
+                                {/* Detail Button */}
+                                <DetailGenerated generated={value} />
+                              </Stack>
+                            </td>
+                          </tr>
+                        ))}
                 </tbody>
               </table>
             </CardContent>

@@ -116,7 +116,7 @@ const RolesTable = () => {
   return (
     <Card>
       <CardHeader
-        title="Role Users"
+        title="Page Role Users"
         subheader="Ini adalah page table untuk melakukan pengaturan atau CRUD pada data role/ otoritas user terhadap aplikasi"
       />
       <CardContent>
@@ -160,7 +160,7 @@ const RolesTable = () => {
                                 <UpdateRoles role={roles} refreshTable={getRole} />
                                 {/* Detail Button */}
                                 <DetailRoles role={roles} />
-                                <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(roles)}>
+                                <IconButton color="error" aria-label="delete" size="large" onClick={() => deleteHandler(roles)}>
                                   <DeleteIcon />
                                 </IconButton>
                               </Stack>

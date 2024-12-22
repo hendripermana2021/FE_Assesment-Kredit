@@ -11,7 +11,7 @@ import { Stack } from '@mui/system';
 import DetailAjuan from './detailAjuan';
 import AddAjuan from './addAjuan';
 import UpdateAjuan from './updateAjuan';
-import { swalConfirm, swalError } from 'constant/functionGlobal';
+import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
 
 const AjuanTable = () => {
   const [ajuan, setAjuan] = useState([]);
@@ -43,9 +43,6 @@ const AjuanTable = () => {
       console.log(response.data.data);
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
-      if (error.response.status === 404) {
-        swalError(`Data not found.`);
-      }
       console.log(error, 'Error fetching data');
       setLoading(false);
     }
@@ -61,7 +58,7 @@ const AjuanTable = () => {
             }
           });
           getAjuan();
-          swalConfirm(`Are you sure for deleting this data`);
+          swalSuccess(`Are you sure for deleting this data`);
         } catch (error) {
           console.error('Error deleting data:', error);
           swalError(`Error for deleted data`);
@@ -73,7 +70,7 @@ const AjuanTable = () => {
   return (
     <Card>
       <CardHeader
-        title="Data Ajuan"
+        title="Page Data Ajuan"
         subheader="Ini adalah page table untuk melihat data nasabah, yang ingin melakukan pengajuan kredit, dan telah ditambahkan oleh petugas"
       />
       <CardContent>
@@ -101,51 +98,47 @@ const AjuanTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="7">Loading...</td>
-                  </tr>
-                ) : ajuan.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">
-                      No Ajuan available
-                    </td>
-                  </tr>
-                ) : (
-                  ajuan.map((value, index) => (
-                    <tr key={index}>
-                      {/* <td className="text-center">{index + 1}</td> */}
-                      <td>{index + 1}</td> {/* Assuming name is 'name' */}
-                      <td>{value.nasabah?.name_nasabah || ''}</td> {/* Assuming name is 'name' */}
-                      <td className="text-center">{value.nasabah?.gender || ''}</td> {/* Assuming gender is 'gender' */}
-                      <td>{value.nasabah?.nik || ''}</td> {/* Assuming address is 'address' */}
-                      <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
-                      <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
-                      <td>
-                        {' '}
-                        {value.status_ajuan == 'Diterima' ? (
-                          <Chip label="Diterima" color="success" variant="outlined" />
-                        ) : value.status_ajuan == 'Ditolak' ? (
-                          <Chip label="Ditolak" color="error" variant="outlined" />
-                        ) : (
-                          <Chip label="Pending / Aktif" color="warning" variant="outlined" />
-                        )}
-                      </td>{' '}
-                      {/* Assuming address is 'address' */}
-                      <td className="text-center">
-                        <Stack direction="row" spacing={1}>
-                          {/* Update Button */}
-                          <UpdateAjuan ajuan={value} refreshTable={getAjuan} />
-                          {/* Detail Button */}
-                          <DetailAjuan ajuan={value} />
-                          <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Stack>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {loading
+                  ? ''
+                  : ajuan.length === 0
+                    ? ''
+                    : ajuan.map((value, index) => (
+                        <tr key={index}>
+                          {/* <td className="text-center">{index + 1}</td> */}
+                          <td>{index + 1}</td> {/* Assuming name is 'name' */}
+                          <td>{value.nasabah?.name_nasabah || ''}</td> {/* Assuming name is 'name' */}
+                          <td className="text-center">{value.nasabah?.gender || ''}</td> {/* Assuming gender is 'gender' */}
+                          <td>{value.nasabah?.nik || ''}</td> {/* Assuming address is 'address' */}
+                          <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
+                          <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
+                          <td>
+                            {' '}
+                            {value.status_ajuan == 'Diterima' ? (
+                              <Chip label="Diterima" color="success" variant="contained" />
+                            ) : value.status_ajuan == 'Ditolak' ? (
+                              <Chip label="Ditolak" color="error" variant="contained" />
+                            ) : (
+                              <Chip label="Pending / Aktif" color="warning" variant="contained" />
+                            )}
+                          </td>{' '}
+                          {/* Assuming address is 'address' */}
+                          <td className="text-center">
+                            {value.status_ajuan == 'Aktif' ? (
+                              <Stack direction="row" spacing={1}>
+                                {/* Update Button */}
+                                <UpdateAjuan ajuan={value} refreshTable={getAjuan} />
+                                {/* Detail Button */}
+                                <DetailAjuan ajuan={value} />
+                                <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
+                                  <DeleteIcon color="error" />
+                                </IconButton>
+                              </Stack>
+                            ) : (
+                              <Chip label="Selesai" color="primary" variant="contained" />
+                            )}
+                          </td>
+                        </tr>
+                      ))}
               </tbody>
             </table>
           </CardContent>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -15,26 +15,54 @@ import propTypes from 'prop-types';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { serverSourceDev } from 'constant/constantaEnv';
+import { swalError } from 'constant/functionGlobal';
 
 // ==============================|| PAGE ROLE ||============================== //
 
 const UpdateRoles = (props) => {
   const { refreshTable, role } = props; // Only refreshTable since we're creating a new role
   const [visible, setVisible] = useState(false); // Modal visibility state
-  const [roleName, setRoleName] = useState(role.role_name);
   const [loading, setLoading] = useState(false);
+  const [roleData, setRoleData] = useState({});
+  const [formData, setFormData] = useState({
+    role_name: ''
+  });
 
   // This handler is called to open the modal with role details
   const showDetails = () => {
     setVisible(true);
   };
 
+  const getRoles = useCallback(async () => {
+    try {
+      const response = await axios.get(`${serverSourceDev}role/byid/${role.id}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
+        }
+      });
+      setRoleData(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        swalError('Error for getting data');
+      }
+      console.log(error, 'Error fetching data');
+    }
+  }, [role.id]); // Only re-create if nasabah.id changes
+
+  // Fetch nasabah details on component mount or when nasabah.id changes
+  useEffect(() => {
+    if (role.id) {
+      getRoles();
+    }
+  }, [getRoles, role.id]); // Include getNasabah in the dependencies
+
   const updateHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     // Form validation
-    if (!roleName) {
+    if (!formData.role_name) {
       setLoading(false);
       return Swal.fire({
         icon: 'error',
@@ -50,18 +78,11 @@ const UpdateRoles = (props) => {
     }
 
     try {
-      const response = await axios.put(
-        `${serverSourceDev}role/update/${role.id}`,
-        {
-          // Change to the correct POST endpoint
-          role_name: roleName
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
-          }
+      const response = await axios.put(`${serverSourceDev}role/update/${role.id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
-      );
+      });
 
       if (response.status === 200) {
         // Usually, 201 is returned for a successful creation
@@ -82,21 +103,22 @@ const UpdateRoles = (props) => {
       }
     } catch (error) {
       console.error(error.message);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error creating data',
-        text: error.message,
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
-      });
+      swalError(`Data Gagal di update`);
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if (roleData) {
+      setFormData({
+        role_name: roleData.role_name || ''
+      });
+    }
+  }, [roleData]);
+
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
   };
 
   return (
@@ -107,7 +129,7 @@ const UpdateRoles = (props) => {
       {/* Modal dialog to show role details */}
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
         <form onSubmit={updateHandler}>
-          <DialogTitle sx={{ fontSize: '1em' }}>
+          <DialogTitle sx={{ fontSize: '1.2em' }}>
             Update Role
             {/* Close Icon */}
             <IconButton
@@ -132,8 +154,8 @@ const UpdateRoles = (props) => {
                   label="Role Name"
                   variant="outlined"
                   sx={{ mt: 1 }}
-                  value={roleName || ''}
-                  onChange={(e) => setRoleName(e.target.value)}
+                  value={formData.role_name}
+                  onChange={(e) => handleInputChange('role_name', e.target.value)}
                 />
               </Grid>
             </Grid>

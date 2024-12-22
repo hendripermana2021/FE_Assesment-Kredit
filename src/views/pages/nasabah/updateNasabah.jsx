@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Grid,
   Button,
@@ -24,64 +24,96 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import propTypes from 'prop-types';
 import { serverSourceDev } from 'constant/constantaEnv';
-import { swalError, swalSuccess } from 'constant/functionGlobal';
+import { formatDate, swalError, swalSuccess } from 'constant/functionGlobal';
 
 const UpdateNasabah = (props) => {
   const { refreshTable, nasabah } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dataNasabah, setDataNasabah] = useState({});
+  const [formData, setFormData] = useState({
+    name_nasabah: '',
+    gender: '',
+    maritalStatus: '',
+    fatherName: '',
+    motherName: '',
+    phoneNumber: '',
+    placeOfBirth: '',
+    birthday: '',
+    address: '',
+    nik: '',
+    jobTitle: '',
+    monthlyIncome: '',
+    employmentStatus: '',
+    workAddress: '',
+    longYearsJob: ''
+  });
 
-  const [name, setName] = useState(nasabah.name_nasabah);
-  const [gender, setGender] = useState(nasabah.gender);
-  const [maritalStatus, setMaritalStatus] = useState(nasabah.marital_status);
-  const [fatherName, setFatherName] = useState(nasabah.fathername);
-  const [motherName, setMotherName] = useState(nasabah.mothername);
-  const [phoneNumber, setPhoneNumber] = useState(nasabah.no_hp);
-  const [placeOfBirth, setPlaceOfBirth] = useState(nasabah.place_of_birth);
-  const [birthday, setBirthday] = useState(nasabah.birthday);
-  const [address, setAddress] = useState(nasabah.address);
-  const [nik, setNik] = useState(nasabah.nik);
-  const [jobTitle, setJobTitle] = useState(nasabah.job_title);
-  const [monthlyIncome, setMonthlyIncome] = useState(nasabah.monthly_income);
-  const [employmentStatus, setEmploymentStatus] = useState(nasabah.employment_status);
-  const [workAddress, setWorkAddress] = useState(nasabah.work_address);
-  const [longYearsJob, setLongYearsJob] = useState(nasabah.long_work_at_company);
+  const getNasabah = useCallback(async () => {
+    try {
+      const response = await axios.get(`${serverSourceDev}nasabah/byid/${nasabah.id}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
+        }
+      });
+      setDataNasabah(response.data.data);
+    } catch (error) {
+      swalError('Error fetching data');
+    }
+  }, [nasabah.id]);
+
+  useEffect(() => {
+    if (nasabah) {
+      getNasabah();
+    }
+  }, [getNasabah, nasabah]);
+
+  useEffect(() => {
+    if (dataNasabah) {
+      setFormData({
+        name_nasabah: dataNasabah.name_nasabah || '',
+        gender: dataNasabah.gender || '',
+        maritalStatus: dataNasabah.marital_status || '',
+        fatherName: dataNasabah.fathername || '',
+        motherName: dataNasabah.mothername || '',
+        phoneNumber: dataNasabah.no_hp || '',
+        placeOfBirth: dataNasabah.place_of_birth || '',
+        birthday: dataNasabah.birthday || '',
+        address: dataNasabah.address || '',
+        nik: dataNasabah.nik || '',
+        jobTitle: dataNasabah.job_title || '',
+        monthlyIncome: dataNasabah.monthly_income || '',
+        employmentStatus: dataNasabah.employment_status || '',
+        workAddress: dataNasabah.work_address || '',
+        longYearsJob: dataNasabah.long_work_at_company || ''
+      });
+    }
+  }, [dataNasabah]);
+
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (!name | !gender | !maritalStatus || !fatherName || !motherName || !phoneNumber) {
+
+    const requiredFields = ['name_nasabah', 'gender', 'maritalStatus', 'fatherName', 'motherName', 'phoneNumber'];
+    const hasEmptyFields = requiredFields.some((field) => !formData[field]);
+
+    if (hasEmptyFields) {
+      setLoading(false);
       return Swal.fire({
         icon: 'error',
-        title: 'Please fill dont empty cause it, required fields',
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
+        title: 'Please fill out all required fields'
       });
     }
-    setVisible(false);
+
     try {
       const response = await axios.put(
         `${serverSourceDev}nasabah/update/${nasabah.id}`,
         {
-          name_nasabah: name,
-          gender: gender,
-          marital_status: maritalStatus,
-          fathername: fatherName,
-          mothername: motherName,
-          no_hp: phoneNumber,
-          place_of_birth: placeOfBirth,
-          address: address,
-          nik: nik,
-          job_title: jobTitle,
-          monthly_income: monthlyIncome,
-          employment_status: employmentStatus,
-          work_address: workAddress,
-          long_work_at_company: longYearsJob
+          ...formData
         },
         {
           headers: {
@@ -91,17 +123,20 @@ const UpdateNasabah = (props) => {
       );
 
       if (response.status === 200) {
-        swalSuccess(`Success updated data`).then(() => {
+        swalSuccess('Data successfully updated').then(() => {
           setVisible(false);
           refreshTable();
         });
       }
     } catch (error) {
-      swalError(`Error updating data`);
+      swalError('Error updating data');
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log('birthday :', formatDate(formData.birthday));
 
   return (
     <>
@@ -109,7 +144,7 @@ const UpdateNasabah = (props) => {
         <EditIcon />
       </IconButton>
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '1.5em' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Update Nasabah
           <IconButton
             color="inherit"
@@ -131,7 +166,14 @@ const UpdateNasabah = (props) => {
                 <Divider sx={{ marginBottom: 2 }}>Personal Information</Divider>
               </Grid>
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} required />
+                <TextField
+                  fullWidth
+                  label="Name"
+                  variant="outlined"
+                  value={formData.name_nasabah}
+                  onChange={(e) => handleInputChange('name_nasabah', e.target.value)}
+                  required
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth sx={{ marginBottom: 1 }}>
@@ -139,13 +181,13 @@ const UpdateNasabah = (props) => {
                   <Select
                     labelId="gender-select-label"
                     id="gender-select"
-                    value={gender} // This ensures it defaults to nasabah.gender if gender is not set
                     label="Gender"
                     required
-                    onChange={(e) => setGender(e.target.value)} // Update state when user selects a gender
+                    value={formData.gender}
+                    onChange={(e) => handleInputChange('gender', e.target.value)}
                   >
-                    <MenuItem value="Laki-laki">Laki-laki</MenuItem>
-                    <MenuItem value="Perempuan">Perempuan</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -154,8 +196,8 @@ const UpdateNasabah = (props) => {
                   fullWidth
                   label="Birthday"
                   variant="outlined"
-                  value={new Date(birthday).toISOString().split('T')[0]}
-                  onChange={(e) => setBirthday(e.target.value)}
+                  value={formatDate(formData.birthday)}
+                  onChange={(e) => handleInputChange('birthday', e.target.value)}
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   required
@@ -167,13 +209,13 @@ const UpdateNasabah = (props) => {
                   <Select
                     labelId="gender-select-label"
                     id="gender-select"
-                    value={maritalStatus}
-                    label="Marital Status"
+                    label="MaritalStatus"
                     required
-                    onChange={(e) => setMaritalStatus(e.target.value)}
+                    value={formData.maritalStatus}
+                    onChange={(e) => handleInputChange('maritalStatus', e.target.value)}
                   >
                     <MenuItem value="Belum Menikah">Belum Menikah</MenuItem>
-                    <MenuItem value="Sudah Menikah">Menikah</MenuItem>
+                    <MenuItem value="Menikah">Menikah</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -188,8 +230,8 @@ const UpdateNasabah = (props) => {
                   type="number"
                   label="Phone Number"
                   variant="outlined"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  value={formData.phoneNumber}
+                  onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                   sx={{ marginBottom: 1 }}
                   required
                 />
@@ -199,8 +241,8 @@ const UpdateNasabah = (props) => {
                   fullWidth
                   label="Place of Birth"
                   variant="outlined"
-                  value={placeOfBirth}
-                  onChange={(e) => setPlaceOfBirth(e.target.value)}
+                  value={formData.placeOfBirth}
+                  onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
                   sx={{ marginBottom: 1 }}
                   required
                 />
@@ -211,8 +253,8 @@ const UpdateNasabah = (props) => {
                   multiline
                   label="Address"
                   variant="outlined"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={formData.address}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
                   required
                   sx={{
                     marginBottom: 1,
@@ -230,8 +272,8 @@ const UpdateNasabah = (props) => {
                   label="NIK"
                   type="number"
                   variant="outlined"
-                  value={nik}
-                  onChange={(e) => setNik(e.target.value)}
+                  value={formData.nik}
+                  onChange={(e) => handleInputChange('nik', e.target.value)}
                   required
                   sx={{ marginBottom: 1 }}
                 />
@@ -246,9 +288,9 @@ const UpdateNasabah = (props) => {
                   fullWidth
                   label="Father's Name"
                   variant="outlined"
-                  value={fatherName}
                   required
-                  onChange={(e) => setFatherName(e.target.value)}
+                  value={formData.fatherName}
+                  onChange={(e) => handleInputChange('fatherName', e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -256,9 +298,9 @@ const UpdateNasabah = (props) => {
                   fullWidth
                   label="Mother's Name"
                   variant="outlined"
-                  value={motherName}
                   required
-                  onChange={(e) => setMotherName(e.target.value)}
+                  value={formData.motherName}
+                  onChange={(e) => handleInputChange('motherName', e.target.value)}
                 />
               </Grid>
 
@@ -267,14 +309,20 @@ const UpdateNasabah = (props) => {
                 <Divider sx={{ marginBottom: 2 }}>Employment Information</Divider>
               </Grid>
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Job Title" variant="outlined" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
+                <TextField
+                  fullWidth
+                  label="Job Title"
+                  variant="outlined"
+                  value={formData.jobTitle}
+                  onChange={(e) => handleInputChange('jobTitle', e.target.value)}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth variant="outlined">
                   <OutlinedInput
-                    onChange={(e) => setMonthlyIncome(e.target.value)}
+                    value={formData.monthlyIncome}
+                    onChange={(e) => handleInputChange('monthlyIncome', e.target.value)}
                     type="number"
-                    value={monthlyIncome}
                     id="outlined-adornment-weight"
                     required
                     endAdornment={<InputAdornment position="end">/ Month</InputAdornment>}
@@ -292,10 +340,10 @@ const UpdateNasabah = (props) => {
                   <Select
                     labelId="employment-select-label"
                     id="employment-select"
-                    value={employmentStatus}
                     label="Employment Status"
                     required
-                    onChange={(e) => setEmploymentStatus(e.target.value)}
+                    value={formData.employmentStatus}
+                    onChange={(e) => handleInputChange('employmentStatus', e.target.value)}
                   >
                     <MenuItem value="Bekerja">Bekerja</MenuItem>
                     <MenuItem value="Tidak Bekerja">Tidak Bekerja</MenuItem>
@@ -308,8 +356,8 @@ const UpdateNasabah = (props) => {
                   multiline
                   label="Work Address"
                   variant="outlined"
-                  value={workAddress}
-                  onChange={(e) => setWorkAddress(e.target.value)}
+                  value={formData.workAddress}
+                  onChange={(e) => handleInputChange('workAddress', e.target.value)}
                   required
                   sx={{
                     marginBottom: 1,
@@ -327,9 +375,9 @@ const UpdateNasabah = (props) => {
                   type="number"
                   label="Years in Job"
                   variant="outlined"
-                  value={longYearsJob}
                   required
-                  onChange={(e) => setLongYearsJob(e.target.value)}
+                  value={formData.longYearsJob}
+                  onChange={(e) => handleInputChange('longYearsJob', e.target.value)}
                 />
               </Grid>
             </Grid>

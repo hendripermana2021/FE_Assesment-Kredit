@@ -13,7 +13,7 @@ import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
 import { Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { swalConfirm, swalError } from 'constant/functionGlobal';
+import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -70,14 +70,14 @@ const AddAjuan = (props) => {
       });
 
       if (response.status === 201) {
-        swalConfirm(`Success for added new ajuan`).then(() => {
+        swalSuccess(`Success for added new ajuan`).then(() => {
           setVisible(false);
           refreshTable();
           resetForm();
         });
       }
     } catch (error) {
-      swalError(`Error for creating data ajuan`);
+      swalError(`Error for creating data ajuan`, error.message);
     } finally {
       setLoading(false);
     }
@@ -134,8 +134,10 @@ const AddAjuan = (props) => {
   };
 
   const resetForm = () => {
-    setName('');
+    setCommented('');
     setJlhDana('');
+    setNasabah('');
+    setKriteriaSelections('');
   };
 
   return (
@@ -144,7 +146,7 @@ const AddAjuan = (props) => {
         Add Ajuan
       </Button>
       <Dialog open={visible} maxWidth="md" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Create New Ajuan
           <IconButton
             color="inherit"

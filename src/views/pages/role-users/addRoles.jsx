@@ -102,7 +102,7 @@ const AddRoles = (props) => {
       </Button>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '1.3em' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Create New Role
           {/* Close Icon */}
           <IconButton

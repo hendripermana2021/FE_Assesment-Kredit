@@ -11,8 +11,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../authentication/auth-forms/AuthLogin';
-import Logo from 'ui-component/Logo';
 import AuthFooter from 'ui-component/cards/AuthFooter';
+import imageLogo from '../../../assets/images/icons/logo-nbp-warna.png';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
@@ -27,9 +27,9 @@ const Login = () => {
             <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
               <AuthCardWrapper>
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                  <Grid item sx={{ mb: 3 }}>
+                  <Grid item sx={{ mb: 3, textAlign: 'center' }}>
                     <Link to="#" aria-label="logo">
-                      <Logo />
+                      <img src={imageLogo} alt="Logo" style={{ height: '20%', width: '20%' }} />
                     </Link>
                   </Grid>
                   <Grid item xs={12}>

@@ -20,10 +20,10 @@ const UpdateSubKriteria = (props) => {
 
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [nameSub, setNameSub] = useState(sub.name_sub);
-  const [value, setValue] = useState(sub.value);
-  const [description, setDescription] = useState(sub.description || '');
-  const [kriteria, setKriteria] = useState(sub.id_kriteria || '');
+  const [nameSub, setNameSub] = useState('');
+  const [value, setValue] = useState('');
+  const [description, setDescription] = useState('');
+  const [kriteria, setKriteria] = useState('');
   const [dataKriteria, SetDataKriteria] = useState([]);
 
   const showDetails = () => {
@@ -31,8 +31,14 @@ const UpdateSubKriteria = (props) => {
   };
 
   useEffect(() => {
+    if (sub) {
+      setNameSub(sub.name_sub);
+      setValue(sub.value);
+      setDescription(sub.description || '');
+      setKriteria(sub.id_kriteria);
+    }
     getKriteria();
-  }, []);
+  }, [sub]);
 
   const getKriteria = async () => {
     try {
@@ -89,7 +95,7 @@ const UpdateSubKriteria = (props) => {
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: 'Sub Kriteria successfully updated!',
+          title: 'Sub Kriteria updated!',
           confirmButtonText: 'OK',
           willOpen: () => {
             // Apply inline CSS to set z-index for SweetAlert modal
@@ -126,7 +132,7 @@ const UpdateSubKriteria = (props) => {
       </IconButton>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Edit Sub Kriteria
           {/* Close Icon */}
           <IconButton

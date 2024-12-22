@@ -17,10 +17,10 @@ export function toDecimal(value) {
     : value;
 }
 
-export function swalError(message) {
+export function swalError(title, message) {
   return Swal.fire({
-    title: 'Error?',
-    text: `${message}`,
+    title: `${title}`,
+    text: `${message || 'An unexpected error occurred'}`,
     icon: 'warning',
     willOpen: () => {
       // Apply inline CSS to set z-index for SweetAlert modal
@@ -34,7 +34,7 @@ export function swalError(message) {
 
 export function swalSuccess(message) {
   return Swal.fire({
-    title: 'Success Deleted',
+    title: 'Success for An Action',
     text: `${message}`,
     icon: 'success',
     willOpen: () => {
@@ -47,7 +47,7 @@ export function swalSuccess(message) {
   });
 }
 
-export function swalConfirm(message) {
+export function swalConfirm(message, buttonMessage) {
   return Swal.fire({
     title: 'Are you sure?',
     text: `${message}`,
@@ -55,7 +55,7 @@ export function swalConfirm(message) {
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!',
+    confirmButtonText: `${buttonMessage || 'Ya, Lakukan'} ?`,
     willOpen: () => {
       // Apply inline CSS to set z-index for SweetAlert modal
       const swalContainer = document.querySelector('.swal2-container');
@@ -64,4 +64,44 @@ export function swalConfirm(message) {
       }
     }
   });
+}
+
+export function formatDate(date) {
+  if (!date || isNaN(Date.parse(date))) {
+    return ''; // Return empty string if the date is invalid
+  }
+
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-based, so add 1
+  const day = String(d.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+export function getDateTimeString(date = new Date(), includeTime = false) {
+  const parsedDate = new Date(date);
+
+  // Check for invalid date
+  // if (isNaN(parsedDate.getTime())) {
+  //   throw new Error('Invalid date');
+  // }
+
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so add 1
+  const day = String(parsedDate.getDate()).padStart(2, '0');
+
+  const datePart = `${month}/${day}/${year}`;
+
+  if (includeTime) {
+    const hours = String(parsedDate.getHours()).padStart(2, '0');
+    const minutes = String(parsedDate.getMinutes()).padStart(2, '0');
+    const seconds = String(parsedDate.getSeconds()).padStart(2, '0');
+
+    // Return date and time in MM/DD/YYYY HH:MM:SS format
+    return `${datePart} ${hours}:${minutes}:${seconds}`;
+  }
+
+  // Return only the date in MM/DD/YYYY format
+  return datePart;
 }

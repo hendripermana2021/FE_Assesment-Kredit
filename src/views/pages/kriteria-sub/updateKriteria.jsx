@@ -131,12 +131,12 @@ const UpdateKriteria = (props) => {
 
   return (
     <>
-      <IconButton color="secondary" aria-label="edit" size="large" onClick={() => showDetails()}>
+      <IconButton color="info" aria-label="edit" size="large" onClick={() => showDetails()}>
         <EditIcon />
       </IconButton>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Detail Kriteria
           {/* Close Icon */}
           <IconButton

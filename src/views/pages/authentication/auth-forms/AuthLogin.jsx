@@ -75,7 +75,7 @@ const AuthLogin = () => {
 
       if (error.response) {
         console.error(error.response.data);
-        swalError(`Error for login`);
+        swalError(error.response.data.msg);
       }
     }
   };
@@ -99,10 +99,11 @@ const AuthLogin = () => {
           </Box>
         </Grid>
       </Grid>
-      <form noValidate onSubmit={emittedLogin}>
+      <form onSubmit={emittedLogin}>
         <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
           <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
           <OutlinedInput
+            required
             id="outlined-adornment-email-login"
             type="email"
             value={email}
@@ -119,6 +120,7 @@ const AuthLogin = () => {
             type={showPassword ? 'text' : 'password'}
             value={password}
             name="password"
+            required
             onChange={(e) => setPassword(e.target.value)}
             endAdornment={
               <InputAdornment position="end">

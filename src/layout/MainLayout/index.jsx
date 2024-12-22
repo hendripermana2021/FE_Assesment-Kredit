@@ -72,7 +72,7 @@ const MainLayout = () => {
   useEffect(() => {
     if (!token) {
       // If token doesn't exist, show SweetAlert
-      swalError('Youre not allowed to this page, please login first').then(() => {
+      swalError('Login first').then(() => {
         // Redirect to login page
         window.location.href = '/login';
       });

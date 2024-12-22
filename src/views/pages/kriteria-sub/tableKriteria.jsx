@@ -15,7 +15,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Tooltip
+  Tooltip,
+  Chip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverSourceDev } from 'constant/constantaEnv';
@@ -147,13 +148,18 @@ const KriteriaTable = () => {
             }
           });
         } catch (error) {
-          willOpen: () => {
-            // Apply inline CSS to set z-index for SweetAlert modal
-            const swalContainer = document.querySelector('.swal2-container');
-            if (swalContainer) {
-              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+          Swal.fire({
+            title: 'Error while',
+            text: 'Error delete kriteira.',
+            icon: 'error',
+            willOpen: () => {
+              // Apply inline CSS to set z-index for SweetAlert modal
+              const swalContainer = document.querySelector('.swal2-container');
+              if (swalContainer) {
+                swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+              }
             }
-          };
+          });
         }
       }
     });
@@ -161,7 +167,7 @@ const KriteriaTable = () => {
 
   return (
     <Card>
-      <CardHeader title="Kriteria dan Sub-Kriteria" subheader="Ini adalah halaman untuk mengatur data Kriteria dan Sub-Kriteria" />
+      <CardHeader title="Page Kriteria dan Sub-Kriteria" subheader="Ini adalah halaman untuk mengatur data Kriteria dan Sub-Kriteria" />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={9}></Grid>
@@ -187,14 +193,16 @@ const KriteriaTable = () => {
             </TableHead>
             <TableBody>
               {!loading && kriteria.length > 0 ? (
-                kriteria.map((data) => (
+                kriteria.map((data, index) => (
                   <TableRow key={data.id}>
-                    <TableCell align="center">{data.id}</TableCell>
+                    <TableCell align="center">{index + 1}</TableCell>
                     <TableCell align="center">{data.name_kriteria}</TableCell>
                     <TableCell align="center">{data.scale_priority}</TableCell>
-                    <TableCell align="center">{data.type}</TableCell>
                     <TableCell align="center">
-                      <Accordion>
+                      {data?.type ? <Chip size="large" label="Profit" color="primary" /> : <Chip label="Cost" color="error" />}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Accordion square>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
                           Sub Kriteria
                         </AccordionSummary>
@@ -213,7 +221,7 @@ const KriteriaTable = () => {
                               {data.sub_kriteria.length > 0 ? (
                                 data.sub_kriteria.map((sub, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="center">{sub.id}</TableCell>
+                                    <TableCell align="center">{index + 1}</TableCell>
                                     <TableCell align="center">{sub.name_sub}</TableCell>
                                     <TableCell align="center">{sub.value}</TableCell>
                                     <TableCell align="center">
@@ -248,8 +256,8 @@ const KriteriaTable = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Stack direction="row" spacing={1}>
-                        <DetailKriteria kriteria={data} />
                         <UpdateKriteria kriteria={data} refreshTable={getKriteria} />
+                        <DetailKriteria kriteria={data} />
                         <IconButton color="error" onClick={() => deleteHandler(data)}>
                           <DeleteIcon />
                         </IconButton>

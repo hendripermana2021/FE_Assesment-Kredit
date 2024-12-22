@@ -86,7 +86,7 @@ const AddKriteria = ({ refreshTable }) => {
       </Button>
 
       <Dialog open={visible} maxWidth="sm" onClose={resetForm}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Create New Kriteria
           <IconButton
             color="inherit"

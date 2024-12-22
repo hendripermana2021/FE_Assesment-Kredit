@@ -44,7 +44,7 @@ const DetailUsers = ({ users }) => {
 
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" fullWidth={false} onClose={() => setVisible(false)}>
-        <DialogTitle>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           User Details
           {/* Close Icon */}
           <IconButton
@@ -114,7 +114,7 @@ const DetailUsers = ({ users }) => {
 
         {/* Dialog Actions */}
         <DialogActions>
-          <Button onClick={() => setVisible(false)} color="secondary">
+          <Button variant="outlined" onClick={() => setVisible(false)} color="secondary">
             Close
           </Button>
         </DialogActions>

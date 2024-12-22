@@ -6,7 +6,8 @@ import ButtonBase from '@mui/material/ButtonBase';
 
 // project imports
 import config from 'config';
-import Logo from 'ui-component/Logo';
+import imageLogo from '../../../assets/images/icons/logo-nbp-warna.png';
+
 import { MENU_OPEN } from 'store/actions';
 
 // ==============================|| MAIN LOGO ||============================== //
@@ -14,9 +15,10 @@ import { MENU_OPEN } from 'store/actions';
 const LogoSection = () => {
   const defaultId = useSelector((state) => state.customization.defaultId);
   const dispatch = useDispatch();
+
   return (
     <ButtonBase disableRipple onClick={() => dispatch({ type: MENU_OPEN, id: defaultId })} component={Link} to={config.defaultPath}>
-      <Logo />
+      <img src={imageLogo} alt="Logo" style={{ height: '30%', width: '30%' }} />
     </ButtonBase>
   );
 };

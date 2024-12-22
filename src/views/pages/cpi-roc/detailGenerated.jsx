@@ -55,7 +55,7 @@ const DetailGenerated = ({ generated }) => {
       </IconButton>
 
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={closeDialog}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Detail Data
           <IconButton
             color="inherit"

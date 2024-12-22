@@ -97,7 +97,7 @@ const TableUsers = () => {
   return (
     <Card>
       <CardHeader
-        title="Data Users"
+        title="Page Data Users"
         subheader="Ini adalah page table untuk melakukan pengaturan atau CRUD pada data user pengguna terhadap aplikasi"
       />
       <CardContent>
@@ -124,39 +124,29 @@ const TableUsers = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="7">Loading...</td>
-                  </tr>
-                ) : users.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">
-                      No Users available
-                    </td>
-                  </tr>
-                ) : (
-                  users.map((value, index) => (
-                    <tr key={index}>
-                      <td className="text-center">{index + 1}</td>
-                      <td>{value.name_user}</td>
-                      <td>{value.gender}</td>
-                      <td>{value.email}</td>
-                      <td>{value.real_password}</td>
-                      <td>{value.role.role_name}</td>
-                      <td className="text-center">
-                        <Stack direction="row" spacing={1}>
-                          {/* Update Button */}
-                          <UpdateUsers users={value} refreshTable={getUsers} />
-                          {/* Detail Button */}
-                          <DetailUsers users={value} />
-                          <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Stack>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {!loading && users.length > 0
+                  ? users.map((value, index) => (
+                      <tr key={index}>
+                        <td className="text-center">{index + 1}</td>
+                        <td>{value.name_user}</td>
+                        <td>{value.gender}</td>
+                        <td>{value.email}</td>
+                        <td>{value.real_password}</td>
+                        <td>{value.role.role_name}</td>
+                        <td className="text-center">
+                          <Stack direction="row" spacing={1}>
+                            {/* Update Button */}
+                            <UpdateUsers users={value} refreshTable={getUsers} />
+                            {/* Detail Button */}
+                            <DetailUsers users={value} />
+                            <IconButton color="error" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </Stack>
+                        </td>
+                      </tr>
+                    ))
+                  : ''}
               </tbody>
             </table>
           </CardContent>

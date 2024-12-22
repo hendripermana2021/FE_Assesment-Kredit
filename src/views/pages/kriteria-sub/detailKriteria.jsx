@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -19,16 +19,18 @@ const DetailKriteria = (props) => {
   const showDetails = () => {
     setVisible(true);
   };
+
+  useEffect(() => {}, [kriteria]);
   const [visible, setVisible] = useState(false);
 
   return (
-    <>
+    <React.Fragment>
       <IconButton color="secondary" aria-label="delete" size="large" onClick={() => showDetails()}>
         <VisibilityIcon />
       </IconButton>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Detail Kriteria
           {/* Close Icon */}
           <IconButton
@@ -48,7 +50,7 @@ const DetailKriteria = (props) => {
           <Grid container spacing={2} sx={{ padding: '1em' }}>
             <Grid item xs={12}>
               <Grid item xs={12} sx={{ textAlign: 'end' }}>
-                {kriteria.type ? <Chip size="large" label="Profit" color="primary" /> : <Chip label="Cost" color="danger" />}
+                {kriteria?.type ? <Chip size="large" label="Profit" color="primary" /> : <Chip label="Cost" color="error" />}
               </Grid>
             </Grid>
             <Grid item xs={12}>
@@ -106,7 +108,7 @@ const DetailKriteria = (props) => {
           </Grid>
         </form>
       </Dialog>
-    </>
+    </React.Fragment>
   );
 };
 

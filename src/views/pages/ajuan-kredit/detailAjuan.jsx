@@ -55,8 +55,8 @@ const DetailAjuan = ({ ajuan }) => {
       </IconButton>
 
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={closeDialog}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
-          Create New Ajuan
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
+          Detail Ajuan
           <IconButton
             color="inherit"
             onClick={closeDialog}
@@ -115,7 +115,7 @@ const DetailAjuan = ({ ajuan }) => {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={closeDialog} color="secondary">
+            <Button variant="outlined" onClick={closeDialog} color="secondary">
               Cancel
             </Button>
           </DialogActions>

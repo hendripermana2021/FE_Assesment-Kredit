@@ -14,7 +14,7 @@ import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
 import { Divider, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
-import { swalConfirm, swalError } from 'constant/functionGlobal';
+import { swalError, swalSuccess } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -78,7 +78,7 @@ const AddNasabah = (props) => {
       );
 
       if (response.status === 201) {
-        swalConfirm('Success for create data').then(() => {
+        swalSuccess('Success for create data').then(() => {
           setVisible(false);
           refreshTable();
           resetForm();
@@ -107,6 +107,7 @@ const AddNasabah = (props) => {
     setEmploymentStatus('');
     setWorkAddress('');
     setLongYearsJob('');
+    setVisible(false);
   };
 
   return (
@@ -115,7 +116,7 @@ const AddNasabah = (props) => {
         Add Nasabah
       </Button>
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Create New Nasabah
           <IconButton
             color="inherit"
@@ -151,8 +152,8 @@ const AddNasabah = (props) => {
                     required
                     onChange={(e) => setGender(e.target.value)}
                   >
-                    <MenuItem value="Laki-laki">Laki-laki</MenuItem>
-                    <MenuItem value="Perempuan">Perempuan</MenuItem>
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -342,7 +343,7 @@ const AddNasabah = (props) => {
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary" variant="outlined">
+            <Button onClick={() => resetForm()} color="secondary" variant="outlined">
               Cancel
             </Button>
             <Button type="submit" color="primary" variant="outlined" disabled={loading}>

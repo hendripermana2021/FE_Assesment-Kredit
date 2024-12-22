@@ -15,7 +15,7 @@ import propTypes from 'prop-types';
 import { Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import PropTypes from 'prop-types';
-import { swalError } from 'constant/functionGlobal';
+import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -25,9 +25,10 @@ const UpdateAjuan = (props) => {
   // State variables for all the fields
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [jlhDana, setJlhDana] = useState(ajuan?.jlh_dana || '');
-  const [commented, setCommented] = useState(ajuan?.commented || '');
-  const [nasabah, setNasabah] = useState(ajuan.nasabah?.id || '');
+  const [jlhDana, setJlhDana] = useState('');
+  const [dataAjuan, setDataAjuan] = useState({});
+  const [commented, setCommented] = useState('');
+  const [nasabah, setNasabah] = useState('');
   const [kriteriaSelections, setKriteriaSelections] = useState([
     {
       id_kriteria: '',
@@ -41,6 +42,16 @@ const UpdateAjuan = (props) => {
     getKriteria();
     getNasabah();
   }, []);
+
+  useEffect(() => {
+    if (ajuan) {
+      setJlhDana(ajuan?.jlh_dana);
+      setCommented(ajuan?.commented);
+      setNasabah(ajuan.nasabah?.id);
+      setDataAjuan(ajuan);
+      console.log(ajuan);
+    }
+  }, [ajuan]);
 
   const showDetails = () => setVisible(true);
   const updateHandler = async (e) => {
@@ -57,9 +68,9 @@ const UpdateAjuan = (props) => {
       jlh_dana: jlhDana,
       commented: commented,
       document: '',
-      kriteria: kriteriaList.map((kriteria, index) => ({
+      kriteria: dataAjuan.cpi_data?.map((kriteria, index) => ({
         id_kriteria: kriteria.id,
-        id_subKriteria: kriteriaSelections[index]?.id_subKriteria
+        id_subKriteria: kriteriaSelections[index]?.id_subKriteria || kriteria.id_subkriteria
       }))
     };
 
@@ -71,12 +82,11 @@ const UpdateAjuan = (props) => {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
       });
-
+      swalConfirm(`Updated data ajuan`);
       if (response.status === 200) {
-        swalConfirm(`Success updated ajuan`).then(() => {
-          setVisible(false);
-          refreshTable();
-        });
+        setVisible(false);
+        refreshTable();
+        swalSuccess(`Data Berhasil diupdated`);
       }
     } catch (error) {
       swalError(`Error updating ajuan`);
@@ -137,11 +147,11 @@ const UpdateAjuan = (props) => {
 
   return (
     <>
-      <IconButton color="secondary" aria-label="edit" size="large" onClick={() => showDetails()}>
+      <IconButton color="primary" aria-label="success" size="large" onClick={() => showDetails()}>
         <EditIcon />
       </IconButton>
       <Dialog open={visible} maxWidth="md" fullWidth onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Update Ajuan
           <IconButton
             color="inherit"
@@ -194,14 +204,14 @@ const UpdateAjuan = (props) => {
                   required
                 />
               </Grid>
-              {ajuan.cpi_data === 0
+              {dataAjuan.cpi_data === 0
                 ? ''
                 : ajuan.cpi_data?.map((values, index) => (
                     <React.Fragment key={index}>
                       <Grid item xs={12} md={6} className="mb-3">
                         <TextField
                           type="text"
-                          value={kriteriaSelections[index]?.id_kriteria || values.kriteria.name_kriteria}
+                          value={kriteriaSelections[index]?.id_kriteria || values.kriteria?.name_kriteria || ''}
                           placeholder="Kriteria"
                           onChange={(e) => handleKriteriaChange(e, index, 'id_kriteria')}
                           readOnly={true}

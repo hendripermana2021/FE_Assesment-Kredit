@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconButton, Card, CardHeader, CardContent, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverSourceDev } from 'constant/constantaEnv';
@@ -15,7 +15,6 @@ import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
 const NasabahTable = () => {
   const [nasabah, setNasabah] = useState([]);
   const [loading, setLoading] = useState(true);
-  console.log(nasabah);
 
   useEffect(() => {
     if (!$.fn.DataTable.isDataTable('#tblNasabah')) {
@@ -73,7 +72,7 @@ const NasabahTable = () => {
   return (
     <Card>
       <CardHeader
-        title="Data Nasabah"
+        title="Page Data Nasabah"
         subheader="Ini adalah page table untuk melakukan pengaturan atau CRUD pada data nasabah, yang telah ditambahkan oleh petugas"
       />
       <CardContent>
@@ -106,27 +105,29 @@ const NasabahTable = () => {
                   : nasabah.length === 0
                     ? ''
                     : nasabah.map((value, index) => (
-                        <tr key={index}>
-                          {/* <td className="text-center">{index + 1}</td> */}
-                          <td>{value.id}</td> {/* Assuming name is 'name' */}
-                          <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
-                          <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
-                          <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}
-                          <td>{value.nik || ''}</td> {/* Assuming NIK is 'nik' */}
-                          <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
-                          <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
-                          <td className="text-center">
-                            <Stack direction="row" spacing={1}>
-                              {/* Update Button */}
-                              <UpdateNasabah nasabah={value} refreshTable={getNasabah} />
-                              {/* Detail Button */}
-                              <DetailNasabah nasabah={value} />
-                              <IconButton color="danger" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Stack>
-                          </td>
-                        </tr>
+                        <React.Fragment key={index}>
+                          <tr>
+                            {/* <td className="text-center">{index + 1}</td> */}
+                            <td>{value.id}</td> {/* Assuming name is 'name' */}
+                            <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
+                            <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
+                            <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}
+                            <td>{value.nik || ''}</td> {/* Assuming NIK is 'nik' */}
+                            <td>{value.pengaju == null || '' ? '' : value.pengaju.name_user}</td> {/* Assuming Pengaju is 'pengaju' */}
+                            <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
+                            <td className="text-center">
+                              <Stack direction="row" spacing={1}>
+                                {/* Update Button */}
+                                <UpdateNasabah nasabah={value} refreshTable={getNasabah} />
+                                {/* Detail Button */}
+                                <DetailNasabah nasabah={value} />
+                                <IconButton color="error" aria-label="delete" size="large" onClick={() => deleteHandler(value)}>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Stack>
+                            </td>
+                          </tr>
+                        </React.Fragment>
                       ))}
               </tbody>
             </table>

@@ -175,7 +175,7 @@ const AddUsers = (props) => {
       </Button>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" fullWidth={false} onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '1.8em' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Create New User
           {/* Close Icon */}
           <IconButton
@@ -268,10 +268,10 @@ const AddUsers = (props) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setVisible(false)} color="secondary">
+            <Button onClick={() => setVisible(false)} variant="outlined" color="secondary">
               Cancel
             </Button>
-            <Button type="submit" color="primary" disabled={loading}>
+            <Button type="submit" variant="outlined" color="primary" disabled={loading}>
               {loading ? <CircularProgress size={24} /> : 'Confirm'}
             </Button>
           </DialogActions>

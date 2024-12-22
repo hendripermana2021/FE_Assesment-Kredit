@@ -120,7 +120,7 @@ const UpdateSubKriteria = (props) => {
       </Button>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Add Sub Kriteria
           {/* Close Icon */}
           <IconButton

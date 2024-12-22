@@ -19,32 +19,11 @@ const pages = {
   type: 'group',
   children: [
     {
-      id: 'role-users',
-      title: 'Role Users',
-      type: 'item',
-      url: '/master/role-users',
-      icon: icons.IconUser // Represents user roles or individual users
-    },
-    {
       id: 'data-nasabah',
-      title: 'Data Nasabah',
+      title: 'Page Data Nasabah',
       type: 'item',
       url: '/master/nasabah',
       icon: icons.IconBuildingBank // Represents customer data (Nasabah) in a banking or financial context
-    },
-    {
-      id: 'data-users',
-      title: 'Data Users',
-      type: 'item',
-      url: '/master/users',
-      icon: icons.IconUsers // Represents multiple users (user management)
-    },
-    {
-      id: 'kriteria-sub',
-      title: 'Kriteria dan Sub-Kriteria',
-      type: 'item',
-      url: '/master/kriteria-sub',
-      icon: icons.IconListCheck // Represents criteria, checklists, or evaluation
     }
   ]
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { serverSourceDev } from 'constant/constantaEnv';
 import PropTypes from 'prop-types';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
+import { swalError } from 'constant/functionGlobal';
 
 // ==============================|| UPDATE USERS ||============================== //
 
@@ -20,14 +21,29 @@ const UpdateUsers = (props) => {
   const { users, refreshTable } = props;
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [name, setName] = useState(users.name_user || ''); // User name input state
-  const [gender, setGender] = useState(users.gender || ''); // Gender input state
-  const [email, setEmail] = useState(users.email || ''); // Email input state
+  const [name, setName] = useState(''); // User name input state
+  const [gender, setGender] = useState(''); // Gender input state
+  const [email, setEmail] = useState(''); // Email input state
   const [password, setPassword] = useState(''); // Password input state
   const [confPassword, setConfPassword] = useState(''); // Confirm Password input state
+  const [role, setRole] = useState(''); // Role select state
+  const [dataRole, setDataRole] = useState([]); // Role options
 
   const [showPassword, setShowPassword] = useState(false); // For password visibility toggle
   const [showConfPassword, setShowConfPassword] = useState(false); // For confirm password visibility toggle
+
+  useEffect(() => {
+    if (users) {
+      setName(users.name_user || '');
+      setGender(users.gender || '');
+      setEmail(users.email || '');
+      setRole(users.role_id); // Set the role id as the selected role
+      setPassword(users.real_password); // Don't show the password, keep it empty
+      setConfPassword(users.real_password); // Don't show the password, keep it empty
+      setEmail(users.email || '');
+    }
+    getRole();
+  }, [users]);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfPassword = () => setShowConfPassword((show) => !show);
@@ -53,6 +69,37 @@ const UpdateUsers = (props) => {
   const handleClose = () => {
     resetForm();
     setVisible(false);
+  };
+
+  const getRole = async () => {
+    try {
+      const response = await axios.get(`${serverSourceDev}role`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
+        }
+      });
+      setDataRole(response.data.data);
+      setLoading(false);
+      console.log(response.data.data);
+      // console.log(sessionStorage.getItem('accessToken'));
+    } catch (error) {
+      if (error.response.status === 404) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Data Tidak Ada',
+          text: 'Maaf Data tidak ditemukan atau belum dibuat',
+          willOpen: () => {
+            // Apply inline CSS to set z-index for SweetAlert modal
+            const swalContainer = document.querySelector('.swal2-container');
+            if (swalContainer) {
+              swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+            }
+          }
+        });
+      }
+      console.log(error, 'Error fetching data');
+      setLoading(false);
+    }
   };
 
   const handleUpdate = async (e) => {
@@ -85,6 +132,7 @@ const UpdateUsers = (props) => {
           name_user: name,
           gender,
           email,
+          role_id: role,
           password: password // Only include password if it's provided
         },
         {
@@ -118,18 +166,7 @@ const UpdateUsers = (props) => {
       }
     } catch (error) {
       setVisible(false);
-      Swal.fire({
-        icon: 'error',
-        title: 'Failed to update user',
-        text: error.response?.data?.message || 'An unexpected error occurred',
-        willOpen: () => {
-          // Apply inline CSS to set z-index for SweetAlert modal
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
-          }
-        }
-      });
+      swalError(`Data Gagal di update`);
     } finally {
       setLoading(false);
     }
@@ -137,12 +174,12 @@ const UpdateUsers = (props) => {
 
   return (
     <>
-      <IconButton color="secondary" aria-label="edit" size="large" onClick={showDetails}>
+      <IconButton color="info" aria-label="edit" size="large" onClick={showDetails}>
         <EditIcon />
       </IconButton>
       {/* Modal dialog */}
       <Dialog open={visible} maxWidth="sm" onClose={() => setVisible(false)} sx={{ padding: '3em' }}>
-        <DialogTitle sx={{ fontSize: '20px' }}>
+        <DialogTitle sx={{ fontSize: '1.2em' }}>
           Edit User Details
           {/* Close Icon */}
           <IconButton
@@ -179,6 +216,27 @@ const UpdateUsers = (props) => {
                 >
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <FormControl fullWidth sx={{ marginBottom: 1 }}>
+                <InputLabel id="gender-select-label">Gender</InputLabel>
+                <Select
+                  labelId="role-select-label"
+                  id="role-select"
+                  value={role}
+                  label="Role"
+                  required
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  {dataRole.map((data, index) => {
+                    return (
+                      <MenuItem key={index} value={data.id}>
+                        {data.role_name}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </FormControl>
             </Grid>
