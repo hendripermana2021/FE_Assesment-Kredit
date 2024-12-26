@@ -30,6 +30,13 @@ const utilities = {
       type: 'item',
       url: '/utils/hitung',
       icon: icons.IconCalculator // Represents calculations or math
+    },
+    {
+      id: 'history-metode',
+      title: 'History Perhitungan',
+      type: 'item',
+      url: '/utils/history',
+      icon: icons.IconHistory // Represents calculations or math
     }
   ]
 };

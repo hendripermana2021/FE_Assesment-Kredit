@@ -97,7 +97,7 @@ const AddRoles = (props) => {
 
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="secondary" onClick={() => setVisible(true)}>
         Add Role
       </Button>
       {/* Modal dialog */}

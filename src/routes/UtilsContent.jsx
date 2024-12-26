@@ -3,11 +3,11 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
-import AjuanPage from 'views/pages/ajuan-kredit';
-import GeneratedPage from 'views/pages/cpi-roc';
 
 // utilities routing
-const RolePage = Loadable(lazy(() => import('views/pages/role-users/index')));
+const HistoryPage = Loadable(lazy(() => import('views/pages/history')));
+const GeneratedPage = Loadable(lazy(() => import('views/pages/cpi-roc')));
+const AjuanPage = Loadable(lazy(() => import('views/pages/ajuan-kredit')));
 
 // sample page routing
 
@@ -26,12 +26,8 @@ const UtilsContent = {
       element: <GeneratedPage />
     },
     {
-      path: 'generated',
-      element: <GeneratedPage />
-    },
-    {
       path: 'history',
-      element: <RolePage />
+      element: <HistoryPage />
     }
   ]
 };

@@ -55,7 +55,7 @@ const AddKriteria = ({ refreshTable }) => {
         swalError(`Bad Request you got it`);
       }
     } catch (error) {
-      swalError(`Error Creating data`);
+      swalError(`Error Create Kriteria`, error.response.data.msg);
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ const AddKriteria = ({ refreshTable }) => {
 
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="secondary" onClick={() => setVisible(true)}>
         Add Kriteria
       </Button>
 
@@ -175,7 +175,7 @@ const AddKriteria = ({ refreshTable }) => {
                   </AccordionDetails>
                 </Accordion>
               ))}
-              <Button variant="contained" color="success" onClick={addSubKriteria} sx={{ mt: 2 }}>
+              <Button variant="outlined" color="success" onClick={addSubKriteria} sx={{ mt: 2 }}>
                 Add Sub Kriteria
               </Button>
 
@@ -183,7 +183,7 @@ const AddKriteria = ({ refreshTable }) => {
                 <Button variant="outlined" color="secondary" onClick={resetForm} disabled={loading} sx={{ mr: 2 }}>
                   Cancel
                 </Button>
-                <Button variant="contained" color="primary" type="submit" disabled={loading}>
+                <Button variant="outlined" color="primary" type="submit" disabled={loading}>
                   {loading ? <CircularProgress size={24} /> : 'Confirm'}
                 </Button>
               </Box>

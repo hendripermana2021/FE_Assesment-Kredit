@@ -108,7 +108,7 @@ const ProfileSection = () => {
   const logout = async () => {
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: 'What do you for sure, to logout ?',
       icon: 'warning',
       willOpen: () => {
         // Apply inline CSS to set z-index for SweetAlert modal

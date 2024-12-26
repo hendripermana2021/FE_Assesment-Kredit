@@ -115,7 +115,7 @@ const UpdateSubKriteria = (props) => {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="primary" onClick={() => setVisible(true)}>
         Add Sub Kriteria
       </Button>
       {/* Modal dialog */}

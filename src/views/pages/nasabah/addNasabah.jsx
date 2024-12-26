@@ -112,7 +112,7 @@ const AddNasabah = (props) => {
 
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="secondary" onClick={() => setVisible(true)}>
         Add Nasabah
       </Button>
       <Dialog open={visible} maxWidth="sm" fullWidth onClose={() => setVisible(false)}>

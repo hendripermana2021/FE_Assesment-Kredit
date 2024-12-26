@@ -114,11 +114,11 @@ const AjuanTable = () => {
                           <td>
                             {' '}
                             {value.status_ajuan == 'Diterima' ? (
-                              <Chip label="Diterima" color="success" variant="contained" />
+                              <Chip label="Diterima" color="success" variant="outlined" />
                             ) : value.status_ajuan == 'Ditolak' ? (
-                              <Chip label="Ditolak" color="error" variant="contained" />
+                              <Chip label="Ditolak" color="error" variant="outlined" />
                             ) : (
-                              <Chip label="Pending / Aktif" color="warning" variant="contained" />
+                              <Chip label="Pending / Aktif" color="warning" variant="outlined" />
                             )}
                           </td>{' '}
                           {/* Assuming address is 'address' */}
@@ -134,7 +134,7 @@ const AjuanTable = () => {
                                 </IconButton>
                               </Stack>
                             ) : (
-                              <Chip label="Selesai" color="primary" variant="contained" />
+                              <Chip label="Selesai" color="primary" variant="outlined" />
                             )}
                           </td>
                         </tr>

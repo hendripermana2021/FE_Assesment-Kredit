@@ -170,7 +170,7 @@ const AddUsers = (props) => {
 
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="secondary" onClick={() => setVisible(true)}>
         Add Users
       </Button>
       {/* Modal dialog */}

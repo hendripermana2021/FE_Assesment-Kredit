@@ -16,7 +16,11 @@ import {
   Table,
   TableBody,
   Chip,
-  Badge
+  Badge,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 
 import { serverSourceDev } from 'constant/constantaEnv';
@@ -24,9 +28,7 @@ import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import $ from 'jquery';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import { Stack } from '@mui/system';
-import DetailGenerated from './detailGenerated';
 import { ExpandMore } from '@mui/icons-material';
 import { IconEye } from '@tabler/icons-react';
 import { swalError, swalSuccess, toDecimal } from 'constant/functionGlobal';
@@ -38,9 +40,10 @@ const GeneratedTable = () => {
   const [ajuan, setAjuan] = useState([]);
   const [loading, setLoading] = useState(true);
   const [kriteria, setKriteria] = useState([]);
-  const [btnCpi, setBtnCpi] = useState(true);
-  const [roc, setRoc] = useState([]);
+  const [calculated, setCalculated] = useState([]);
+  const [calculatedId, setCalculatedId] = useState('');
   const [cpi, setCpi] = useState([]);
+  const [roc, setRoc] = useState([]);
 
   useEffect(() => {
     if (!$.fn.DataTable.isDataTable('#tblGenerated')) {
@@ -63,13 +66,20 @@ const GeneratedTable = () => {
         }, 1000);
       });
     }
-    getAjuan();
     getKriteria();
-  }, []);
+    getCalculated();
+  }, [calculatedId]);
 
-  const getAjuan = async () => {
+  useEffect(() => {
+    if (calculatedId) {
+      getAjuan(calculatedId);
+      countCPI(calculatedId);
+    }
+  }, [calculatedId]);
+
+  const getAjuan = async (data) => {
     try {
-      const response = await axios.get(`${serverSourceDev}ajuan/generated`, {
+      const response = await axios.get(`${serverSourceDev}ajuan/history/byid/${data}`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
@@ -100,78 +110,50 @@ const GeneratedTable = () => {
     }
   };
 
-  const countROC = async () => {
-    Swal.fire({
-      title: 'Generated ROC?',
-      text: 'Lakukan perhitungan ROC pada tiap Kriteria',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Generated',
-      willOpen: () => {
-        // Apply inline CSS to set z-index for SweetAlert modal
-        const swalContainer = document.querySelector('.swal2-container');
-        if (swalContainer) {
-          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+  const getCalculated = async () => {
+    try {
+      const response = await axios.get(`${serverSourceDev}history`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
-      }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.get(`${serverSourceDev}action/calculatedROC`, {
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
-            }
-          });
-          setRoc(response.data.data);
-          getKriteria(); // Reload the data after deletion
-          setBtnCpi(false);
-          console.log('data roc generated : ', response.data.data);
-          swalSuccess('Successfully generated ROC');
-        } catch (error) {
-          console.log('TOken for generated ROC :', sessionStorage.getItem('accessToken'));
-          swalError('Error generating ROC');
-
-          console.log('ERROR ROC', error);
-        }
-      }
-    });
+      });
+      setCalculated(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      swalError(`Error fetching data`);
+      setLoading(false);
+      console.log(error, 'Error fetching data');
+    }
   };
 
-  const countCPI = async () => {
-    Swal.fire({
-      title: 'Generated CPI?',
-      text: 'Lakukan perhitungan CPI pada tiap Kriteria',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, Generated',
-      willOpen: () => {
-        // Apply inline CSS to set z-index for SweetAlert modal
-        const swalContainer = document.querySelector('.swal2-container');
-        if (swalContainer) {
-          swalContainer.style.zIndex = '9999'; // Set a high z-index to make sure it's on top
+  const countCPI = async (id) => {
+    try {
+      const response = await axios.get(`${serverSourceDev}action/calculatedCPI/history/${id}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
-      }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.get(`${serverSourceDev}action/calculatedCPI`, {
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
-            }
-          });
-          setCpi(response.data.data);
-          getAjuan(); // Reload the data after deletion
-          console.log('data CPI generated : ', response.data.data);
-          swalSuccess(`Successfully generated CPI`);
-        } catch (error) {
-          console.log('ERROR CPI', error);
+      });
+      setCpi(response.data.data);
+      countRoc();
+      console.log('data CPI generated : ', response.data.data);
+      swalSuccess(`Successfully get History`);
+    } catch (error) {
+      console.log('ERROR CPI', error);
+    }
+  };
+
+  const countRoc = async () => {
+    try {
+      const response = await axios.get(`${serverSourceDev}action/calculatedROC`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
-      }
-    });
+      });
+      setRoc(response.data.data);
+      console.log('data CPI generated : ', response.data.data);
+    } catch (error) {
+      console.log('ERROR ROC', error);
+    }
   };
 
   const exportToPDF = () => {
@@ -234,14 +216,33 @@ const GeneratedTable = () => {
           <Card variant="outlined" sx={{ boxShadow: 3, padding: '2em' }}>
             <Grid container spacing={2}>
               {' '}
-              <Grid item xs={4} md={4} sm={4}></Grid>
+              <Grid item xs={4} md={4} sm={4}>
+                <FormControl sx={{ width: '50%' }}>
+                  <InputLabel id="demo-simple-select-label">Generated History</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={calculatedId}
+                    label="Generated History
+                    
+                    "
+                    onChange={(e) => setCalculatedId(e.target.value)}
+                  >
+                    {calculated.length !== 0 ? (
+                      calculated.map((data, index) => {
+                        return (
+                          <MenuItem key={index} value={data.id}>
+                            {data.id} - {new Date(data.createdAt).toISOString().split('T')[0]}
+                          </MenuItem>
+                        );
+                      })
+                    ) : (
+                      <MenuItem disabled>Data tidak ada</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
               <Grid item xs={8} md={8} sm={2} sx={{ textAlign: 'end' }}>
-                <Button variant="outlined" color="secondary" onClick={() => countROC()} sx={{ marginRight: '1em' }}>
-                  Generated ROC
-                </Button>
-                <Button variant="outlined" color="secondary" onClick={() => countCPI(true)} disabled={btnCpi}>
-                  Generated CPI
-                </Button>
                 <Button variant="outlined" color="info" onClick={() => exportToPDF()} sx={{ marginLeft: '3em' }}>
                   Generated Report
                 </Button>
@@ -260,7 +261,6 @@ const GeneratedTable = () => {
                     <th className="text-center">CPI Result</th>
                     <th className="text-center">Status</th>
                     <th className="text-center">Rank</th>
-                    <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,12 +296,6 @@ const GeneratedTable = () => {
                               )}
                             </td>
                             <td>{value.rank || 'No Rank'}</td>
-                            <td className="text-center">
-                              <Stack direction="row" spacing={1}>
-                                {/* Detail Button */}
-                                <DetailGenerated generated={value} />
-                              </Stack>
-                            </td>
                           </tr>
                         ))}
                 </tbody>

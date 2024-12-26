@@ -13,7 +13,7 @@ import axios from 'axios';
 import { serverSourceDev } from 'constant/constantaEnv';
 import propTypes from 'prop-types';
 import { Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { swalConfirm, swalError, swalSuccess } from 'constant/functionGlobal';
+import { swalError, swalSuccess } from 'constant/functionGlobal';
 
 // ==============================|| ADD NASABAH ||============================== //
 
@@ -77,7 +77,8 @@ const AddAjuan = (props) => {
         });
       }
     } catch (error) {
-      swalError(`Error for creating data ajuan`, error.message);
+      swalError(`Error for creating data ajuan`, error.response.data.msg);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -96,7 +97,7 @@ const AddAjuan = (props) => {
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.response.status === 404) {
-        swalError('Data Not Found, pleas');
+        swalError('Data Not Found', error.response.data.msg);
       }
       console.log(error, 'Error fetching data');
       setLoading(false);
@@ -116,7 +117,7 @@ const AddAjuan = (props) => {
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.response.status === 404) {
-        swalError(`Data Not Found,`);
+        swalError(`Data Not Found.`, error.response.data.msg);
       }
       console.log(error, 'Error fetching data');
       setLoading(false);
@@ -142,7 +143,7 @@ const AddAjuan = (props) => {
 
   return (
     <>
-      <Button variant="contained" color="secondary" onClick={() => setVisible(true)}>
+      <Button variant="outlined" color="secondary" onClick={() => setVisible(true)}>
         Add Ajuan
       </Button>
       <Dialog open={visible} maxWidth="md" fullWidth onClose={() => setVisible(false)}>
