@@ -183,7 +183,7 @@ const KriteriaTable = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">ID</TableCell>
+                <TableCell align="center">No.</TableCell>
                 <TableCell align="center">Name Kriteria</TableCell>
                 <TableCell align="center">Scale Priority</TableCell>
                 <TableCell align="center">Type</TableCell>
@@ -210,7 +210,7 @@ const KriteriaTable = () => {
                           <Table>
                             <TableHead>
                               <TableRow>
-                                <TableCell align="center">ID</TableCell>
+                                <TableCell align="center">No.</TableCell>
                                 <TableCell align="center">Name Sub</TableCell>
                                 <TableCell align="center">Value</TableCell>
                                 <TableCell align="center">Description</TableCell>

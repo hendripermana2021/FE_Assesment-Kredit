@@ -108,7 +108,7 @@ const NasabahTable = () => {
                         <React.Fragment key={index}>
                           <tr>
                             {/* <td className="text-center">{index + 1}</td> */}
-                            <td>{value.id}</td> {/* Assuming name is 'name' */}
+                            <td>{index + 1}</td> {/* Assuming name is 'name' */}
                             <td>{value.name_nasabah}</td> {/* Assuming name is 'name' */}
                             <td className="text-center">{value.gender}</td> {/* Assuming gender is 'gender' */}
                             <td>{value.address || ' '}</td> {/* Assuming address is 'address' */}

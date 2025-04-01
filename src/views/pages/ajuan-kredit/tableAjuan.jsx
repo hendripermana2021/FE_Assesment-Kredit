@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconButton, Card, CardHeader, CardContent, Grid, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { serverSourceDev } from 'constant/constantaEnv';
@@ -7,7 +7,6 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import $ from 'jquery';
 import axios from 'axios';
 import { Stack } from '@mui/system';
-// import UpdateAjuan from './updateAjuan';
 import DetailAjuan from './detailAjuan';
 import AddAjuan from './addAjuan';
 import UpdateAjuan from './updateAjuan';
@@ -33,14 +32,14 @@ const AjuanTable = () => {
 
   const getAjuan = async () => {
     try {
-      const response = await axios.get(`${serverSourceDev}ajuan`, {
+      const response = await axios.get(`${serverSourceDev}ajuan/generated`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
       });
       setAjuan(response.data.data);
       setLoading(false);
-      console.log(response.data.data);
+      console.log('Get Ajuan =>', response.data.data);
       // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       console.log(error, 'Error fetching data');

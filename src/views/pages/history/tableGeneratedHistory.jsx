@@ -31,7 +31,7 @@ import axios from 'axios';
 import { Stack } from '@mui/system';
 import { ExpandMore } from '@mui/icons-material';
 import { IconEye } from '@tabler/icons-react';
-import { swalError, swalSuccess, toDecimal } from 'constant/functionGlobal';
+import { formatDate, swalError, toDecimal } from 'constant/functionGlobal';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 // import UpdateAjuan from './updateAjuan';
@@ -134,9 +134,8 @@ const GeneratedTable = () => {
         }
       });
       setCpi(response.data.data);
-      countRoc();
       console.log('data CPI generated : ', response.data.data);
-      swalSuccess(`Successfully get History`);
+      countRoc();
     } catch (error) {
       console.log('ERROR CPI', error);
     }
@@ -150,7 +149,7 @@ const GeneratedTable = () => {
         }
       });
       setRoc(response.data.data);
-      console.log('data CPI generated : ', response.data.data);
+      console.log('data ROC generated : ', response.data.data);
     } catch (error) {
       console.log('ERROR ROC', error);
     }
@@ -232,7 +231,7 @@ const GeneratedTable = () => {
                       calculated.map((data, index) => {
                         return (
                           <MenuItem key={index} value={data.id}>
-                            {data.id} - {new Date(data.createdAt).toISOString().split('T')[0]}
+                            {data.id} - {formatDate(data?.createdAt)}
                           </MenuItem>
                         );
                       })
@@ -278,14 +277,7 @@ const GeneratedTable = () => {
                             <td>{value.petugas_pengaju == null || '' ? '' : value.petugas_pengaju.name_user}</td>{' '}
                             {/* Assuming Pengaju is 'pengaju' */}
                             <td>{value.createdAt ? new Date(value.createdAt).toLocaleString() : ''}</td>
-                            <td>
-                              {typeof value.cpi_result === 'number'
-                                ? new Intl.NumberFormat('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                  }).format(value.cpi_result)
-                                : value.cpi_result}
-                            </td>
+                            <td>{value?.cpi_result ? toDecimal(value.cpi_result) : 0}</td>
                             <td>
                               {value.status_ajuan == 'Aktif' ? (
                                 <Chip size="large" variant="outlined" label={value.status_ajuan} color="info" />
@@ -336,16 +328,7 @@ const GeneratedTable = () => {
                           <Chip label="Cost" color="error" variant="outlined" />
                         )}
                       </td>
-                      <td align="center">
-                        {' '}
-                        {typeof data.weight_score === 'number'
-                          ? new Intl.NumberFormat('en-US', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2
-                            }).format(data.weight_score)
-                          : data.weight_score}
-                        {}
-                      </td>
+                      <td align="center"> {data?.weight_score ? toDecimal(data.weight_score) : ''}</td>
                       <td align="center">
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1-content" id="panel1-header">
@@ -503,8 +486,8 @@ const GeneratedTable = () => {
                         <>
                           <TableRow key={index}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{data.nasabah.name_nasabah}</TableCell>
-                            {cpi.step1?.groupedArrays[index].map((arrays, indexArrays) => (
+                            <TableCell>{data.nasabah?.name_nasabah}</TableCell>
+                            {cpi.step1?.groupedArrays[index]?.map((arrays, indexArrays) => (
                               <TableCell key={indexArrays}>{arrays}</TableCell>
                             ))}
                           </TableRow>
@@ -550,7 +533,7 @@ const GeneratedTable = () => {
                         <TableRow key={index}>
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{data.nasabah.name_nasabah}</TableCell>
-                          {cpi.step2?.[index].map((arrays, indexArrays) => (
+                          {cpi.step2?.[index]?.map((arrays, indexArrays) => (
                             <TableCell key={indexArrays}>
                               {' '}
                               {typeof arrays === 'number'
@@ -619,7 +602,7 @@ const GeneratedTable = () => {
                         <TableRow key={index}>
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{data.nasabah.name_nasabah}</TableCell>
-                          {cpi.step2?.[index].map((arrays, indexArrays) => (
+                          {cpi.step2?.[index]?.map((arrays, indexArrays) => (
                             <TableCell key={indexArrays}>
                               {' '}
                               {typeof arrays === 'number'
@@ -691,7 +674,7 @@ const GeneratedTable = () => {
                         <TableRow key={index}>
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{data.nasabah.name_nasabah}</TableCell>
-                          {cpi.step3?.step3Transpose?.[index].map((arrays, indexArrays) => (
+                          {cpi.step3?.step3Transpose?.[index]?.map((arrays, indexArrays) => (
                             <TableCell key={indexArrays}>
                               {' '}
                               {typeof arrays === 'number'

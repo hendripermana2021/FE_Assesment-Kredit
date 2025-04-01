@@ -28,7 +28,7 @@ const AjuanTableHistory = () => {
 
   const getAjuan = async () => {
     try {
-      const response = await axios.get(`${serverSourceDev}ajuan/history`, {
+      const response = await axios.get(`${serverSourceDev}ajuan/history/finish`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
