@@ -14,8 +14,8 @@ const icons = {
 
 const pages = {
   id: 'pages',
-  title: 'Data Master',
-  caption: 'Data Master Aplikasi',
+  title: 'Menu Action',
+  caption: 'Menu Action Aplikasi',
   type: 'group',
   children: [
     {
@@ -24,7 +24,14 @@ const pages = {
       type: 'item',
       url: '/master/nasabah',
       icon: icons.IconBuildingBank // Represents customer data (Nasabah) in a banking or financial context
-    }
+    }, 
+    {
+      id: 'ajuan-kredit',
+      title: 'Ajuan Kredit',
+      type: 'item',
+      url: '/utils/ajuan-kredit',
+      icon: icons.IconListCheck // Represents documents or forms
+    },
   ]
 };
 

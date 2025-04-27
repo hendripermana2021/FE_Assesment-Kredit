@@ -35,6 +35,7 @@ const AddAjuan = (props) => {
   const [kriteriaList, setKriteriaList] = useState([]);
   const [nasabahList, setNasabahList] = useState([]);
 
+
   useEffect(() => {
     getKriteria();
     getNasabah();

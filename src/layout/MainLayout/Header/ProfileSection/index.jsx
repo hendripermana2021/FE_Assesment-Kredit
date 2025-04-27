@@ -84,8 +84,8 @@ const ProfileSection = () => {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`
         }
       });
+      sessionStorage.setItem('profile', JSON.stringify(response.data.data))
       setProfile(response.data.data);
-      // console.log(sessionStorage.getItem('accessToken'));
     } catch (error) {
       if (error.status === 404) {
         Swal.fire({
@@ -130,7 +130,7 @@ const ProfileSection = () => {
             }
           });
 
-          sessionStorage.removeItem('accessToken');
+          ['profile', 'accessToken'].forEach(key => sessionStorage.removeItem(key));
 
           swalSuccess(`Success logout from account`).then(() => {
             navigate('/login');

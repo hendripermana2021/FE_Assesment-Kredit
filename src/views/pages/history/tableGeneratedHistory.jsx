@@ -94,6 +94,8 @@ const GeneratedTable = () => {
     }
   };
 
+  console.log("AJUAN ==>", ajuan)
+
   const getKriteria = async () => {
     try {
       const response = await axios.get(`${serverSourceDev}kriteria-sub`, {

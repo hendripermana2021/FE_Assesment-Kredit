@@ -10,12 +10,14 @@ import AjuanTableHistory from './tableAjuan-history';
 const AjuanPage = () => {
   // const [isLoading, setLoading] = useState(true);
 
+  const profileGet = sessionStorage.getItem("profile")
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={12} sm={6}>
           <AjuanTable />
-          <AjuanTableHistory />
+          {profileGet.role_id != 1 ? "" : <AjuanTableHistory />}
         </Grid>
       </Grid>
     </Box>
